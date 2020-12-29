@@ -1,1 +1,2 @@
-# game_poke_solitaire
+# egret version
+ >> 5.2.33
