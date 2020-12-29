@@ -97,4 +97,34 @@ class PokeRuleUtil {
         }
         return array;
     }
+
+    public debugCode_GetPokeNum(input: Poke | Poke[]) {
+        if (!input) return;
+        const typeMap: {
+            a: string, b: string, c: string, d: string
+        } = { a: '♥（红桃）', b: '♠（黑桃）', c: '♦（方块）', d: '♣（梅花）' };
+        let array: Poke[] = [];
+        // 判断传入对象是否是集合，如果是集合则继续遍历
+        if (Object.prototype.toString.call(input) !== '[object Array]') {
+            array = [input as Poke];
+        } else {
+            array = [...(input as Poke[])];
+        }
+        array.forEach(row => {
+            console.log('%c' + typeMap[row.config.off.type] + '_ ' + row.config.off.figure, 'color:red;font-size:18px;');
+        })
+    }
+
+    public debugCode_GetPokePoint(input: Poke, inputConsoleStr: string = '') {
+        if (!input) return;
+        const typeMap: {
+            a: string, b: string, c: string, d: string
+        } = { a: '♥', b: '♠', c: '♦', d: '♣' };
+        if (inputConsoleStr && inputConsoleStr.length > 0) console.log(inputConsoleStr);
+        console.log('%c======================扑克牌详情 - start ==========================', 'color:#e1ddd8; font-size:12px;');
+        console.log(`扑克牌：${typeMap[input.config.off.type]} ${input.config.off.figure}, 第${input.config.off.point.col + 1}列, 第${input.config.off.point.row + 1}个`);
+        console.log(`是否是固定位置[fixed]: ${input.config.off.fixed.is}, 固定盒子类型: ${input.config.off.fixed.type}`);
+        console.log(`是否已开启拖拽[openDrop]：${input.config.off.openDrop}, 是否开启吸附[openAdsorb]: ${input.config.off.openAdsorb}`)
+        console.log('%c======================扑克牌详情 - end  ==========================', 'color:#e1ddd8; font-size:12px;');
+    }
 }

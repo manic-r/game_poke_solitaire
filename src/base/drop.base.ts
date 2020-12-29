@@ -50,6 +50,7 @@ abstract class DropBase extends SceneBase {
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.topFixedArray))
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.centerFixedArray))
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.pokeQueue))
+        PokeRuleUtil.Instance.debugCode_GetPokePoint(this.Child, '操作前：');
         if (!this.Child.config.off.openDrop) return;
         this.XTouch = stageX;
         this.YTouch = stageY;
@@ -81,7 +82,7 @@ abstract class DropBase extends SceneBase {
         console.log('执行End')
         // ================= 碰撞检测 start =================
         const hitPokes: Poke = DropBaseUtil.getCollisionCheck(this.Child);
-        console.log(hitPokes)
+        console.log(PokeRuleUtil.Instance.debugCode_GetPokeNum(hitPokes))
         // TODO 目前先暂时按一个处理，原谅我！因为宽度刚刚好够一个！
         // TODO 中心固定的吸附有问题！
         let canMove: boolean = false;
@@ -91,7 +92,7 @@ abstract class DropBase extends SceneBase {
             const movePokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[this.Config.off.point.col];
             // 移除元素
             movePokeArray.pop();
-            console.log("原始列：movePokeArray：", movePokeArray)
+            console.log("原始列：movePokeArray：", movePokeArray, PokeRuleUtil.Instance.debugCode_GetPokeConfig(movePokeArray))
             // 将当前末尾元素设置可拖拽和吸附
             // 如果是最后一个元素，获取当前列的位置，获取对应的固定图像，设置为可吸附
             if (movePokeArray.length === 0) {
@@ -124,6 +125,7 @@ abstract class DropBase extends SceneBase {
             const point: egret.Point = PokeRandomUtil.computeNextPokePoint(hitPokes);
             // 移动扑克牌
             DropBaseUtil.moveTween(this, { x: point.x, y: point.y });
+            PokeRuleUtil.Instance.debugCode_GetPokePoint(this.Child, '操作后：');
             canMove = true;
         } else {
             canMove = false;
