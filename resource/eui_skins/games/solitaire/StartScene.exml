@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="StartSceneexml" width="1024" height="768" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image source="index_bg_png" x="0" y="0" anchorOffsetX="0" width="100%" anchorOffsetY="0" height="100%"/>
+    <!-- <e:Button width="300" height="60" x="536" y="440" label="开始游戏" /> -->
+    <!-- <e:Button width="300" height="60" x="536" y="540" label="继续游戏" /> -->
+</e:Skin>

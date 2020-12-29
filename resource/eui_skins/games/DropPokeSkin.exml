@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="DropPokeSkin"
+	 width="60"
+	height="86" xmlns:e="http://ns.egret.com/eui">
+    <e:Image x="0" y="0" width="100%" height="100%"/>
+    
+</e:Skin>
