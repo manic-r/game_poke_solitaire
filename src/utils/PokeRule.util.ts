@@ -9,6 +9,7 @@ interface PokePosition {
     bottomLeft: egret.Point;
 }
 type PokePositions = PokePosition[];
+type POKE_COLOR = 'RED' | 'BLACK';
 
 class PokeRuleUtil {
 
@@ -57,9 +58,6 @@ class PokeRuleUtil {
      */
     private get pokeHitPointMapping(): PokePositions {
         if (!this.pokeQueue) return [];
-        // return this.pokeQueue.filter(rowArray => rowArray.length > 0).map(rowArray =>
-        //     PokeRandomUtil.computeCapePoint(rowArray[rowArray.length - 1])
-        // )
         return this.pokeQueue.filter(rowArray =>
             rowArray.length > 0
             && rowArray[rowArray.length - 1].config.off.openAdsorb
@@ -77,6 +75,39 @@ class PokeRuleUtil {
             ...PokeRuleUtil.Instance.fixedHitPointMapping(bool),
             ...PokeRuleUtil.Instance.pokeHitPointMapping
         ]
+    }
+
+    /**
+     * 判断扑克牌花色是否正确，是否可放置
+     * @param localPoke 当前扑克牌
+     * @param hitPoke 碰撞的目标扑克牌
+     * @returns true: 可放置, false: 不可放置
+     */
+    public checkPokeSiteColor(localPoke: Poke, hitPoke: Poke): boolean {
+        /**
+         * 逻辑：
+         * 1. 红色和黑色相互穿插
+         * 2. 序号逐渐缩小 (碰撞 > 当前)
+         */
+        // 当前拖动的扑克牌，对象为空，判断为不可放置
+        if (!localPoke) return false;
+        // 碰撞的目标扑克牌，对象为空，判断为不可放置
+        if (!hitPoke) return false;
+        // 如果碰撞的扑克是默认固定方块时,判断为可放置
+        if (hitPoke.config.off.fixed.is) return true;
+        // 判断花色
+        // 花色规则：对应Map 【a: '♥（红桃）', b: '♠（黑桃）', c: '♦（方块）', d: '♣（梅花）'】
+        // a -> b | d; b -> a | c; c -> b | d; d -> a | c;
+        // 处理花色
+        const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
+        const localColor: POKE_COLOR = roleMap[localPoke.config.off.type];
+        const hitColor: POKE_COLOR = roleMap[hitPoke.config.off.type];
+        if (localColor === hitColor) return false;
+        // 处理文字序号
+        const localFigure: number = Number(localPoke.config.off.figure);
+        const hitFigure: number = Number(hitPoke.config.off.figure);
+        if ((localFigure + 1) !== hitFigure) return false;
+        return true;
     }
 
     // 1. 获取所有碰撞点集合

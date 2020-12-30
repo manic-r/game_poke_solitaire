@@ -19,8 +19,11 @@ interface PokeConfig {
         // 是否开启拖拽，[false: 关闭拖拽，true: 启动拖拽]
         openDrop?: boolean,
         // 扑克牌 三属性
+        // 花色
         type?: string,
+        // 字号
         figure?: string,
+        // 名称
         name?: string,
         // 是否开启吸附功能
         openAdsorb?: boolean,
