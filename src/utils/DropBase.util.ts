@@ -86,6 +86,7 @@ class DropBaseUtil {
     public static getCollisionChecks(poke: Poke): Poke[] {
         // 获取全部碰撞点（强制重新获取）
         const hitPoints: PokePositions = PokeRuleUtil.Instance.getHitPoints(true);
+        // console.log('这是碰撞点：', hitPoints)
         // 记录碰撞点对应的扑克牌对象
         const hitPokes: Poke[] = [];
         hitPoints.filter(hitPoint => hitPoint.poke.name !== poke.name).forEach(hitPoint => {
@@ -106,19 +107,11 @@ class DropBaseUtil {
         // 获取全部碰撞扑克牌
         const collision: Poke[] = DropBaseUtil.getCollisionChecks(poke);
         console.log('collision', collision)
-        if (collision.length === 0) {
-            return null;
-        }
-        if (collision.length > 0) {
+        // TODO 是否需要做判断操作 还是只是获取第一个
+        if (collision.length === 1) {
             return collision[0];
         }
-        console.log(collision)
-        console.log(poke.x, poke.y)
-        // 获取多个触碰点的四点坐标
-        // TODO 是否需要做判断操作 还是只是获取第一个
-        // return null;
     }
-
 }
 
 interface CreateMaskType {

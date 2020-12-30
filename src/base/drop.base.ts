@@ -50,6 +50,7 @@ abstract class DropBase extends SceneBase {
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.topFixedArray))
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.centerFixedArray))
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.pokeQueue))
+        PokeRuleUtil.Instance.debugCode_GetPokeInfo(this.Child, 'onTouchBegin 操作前, 当前对象：');
         if (!this.Child.config.off.openDrop) return;
         this.XTouch = stageX;
         this.YTouch = stageY;
@@ -81,7 +82,7 @@ abstract class DropBase extends SceneBase {
         console.log('执行End')
         // ================= 碰撞检测 start =================
         const hitPokes: Poke = DropBaseUtil.getCollisionCheck(this.Child);
-        console.log(hitPokes)
+        PokeRuleUtil.Instance.debugCode_GetPokeInfo(hitPokes, '碰撞的扑克牌信息')
         // TODO 目前先暂时按一个处理，原谅我！因为宽度刚刚好够一个！
         // TODO 中心固定的吸附有问题！
         let canMove: boolean = false;
@@ -91,7 +92,7 @@ abstract class DropBase extends SceneBase {
             const movePokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[this.Config.off.point.col];
             // 移除元素
             movePokeArray.pop();
-            console.log("原始列：movePokeArray：", movePokeArray)
+            console.log(`原始列：movePokeArray：${this.Config.off.point.col}`, movePokeArray, PokeRuleUtil.Instance.debugCode_GetPokeConfig(movePokeArray))
             // 将当前末尾元素设置可拖拽和吸附
             // 如果是最后一个元素，获取当前列的位置，获取对应的固定图像，设置为可吸附
             if (movePokeArray.length === 0) {
@@ -116,14 +117,20 @@ abstract class DropBase extends SceneBase {
                 fixed.config.off.openAdsorb = false;
             }
             // 修改元素坐标
-            this.Child.config.off.point.col = lastPoke.config.off.point.col;
-            this.Child.config.off.point.row = lastPoke.config.off.point.row + 1;
+            this.Child.config.off.point.col = hitPokes.config.off.point.col;
+            this.Child.config.off.point.row = addPokeArray.length;// lastPoke.config.off.fixed.is ? 0 : // lastPoke.config.off.point.row/*  + 1 */;
             addPokeArray.push(this.Child);
+            console.log('修改完坐标的当前对象集合', PokeRuleUtil.Instance.debugCode_GetPokeConfig([this.Child]), PokeRuleUtil.Instance.pokeQueue[hitPokes.config.off.point.col]);
 
             // 计算位置
             const point: egret.Point = PokeRandomUtil.computeNextPokePoint(hitPokes);
             // 移动扑克牌
             DropBaseUtil.moveTween(this, { x: point.x, y: point.y });
+            PokeRuleUtil.Instance.debugCode_GetPokeInfo(this.Child, 'onTouchEnd 操作后, 当前对象：');
+            PokeRuleUtil.Instance.debugCode_GetPokeInfo(lastPoke, 'onTouchEnd 操作后, 碰撞对象：');
+            if (movePokeArray.length > 0) {
+                PokeRuleUtil.Instance.debugCode_GetPokeInfo(movePokeArray[movePokeArray.length - 1], 'onTouchEnd 操作后, 原始列最后一位对象：');
+            }
             canMove = true;
         } else {
             canMove = false;
