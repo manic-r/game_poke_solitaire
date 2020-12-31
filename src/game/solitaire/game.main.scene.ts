@@ -37,7 +37,7 @@ class GameMainScene extends SceneBase {
             // 前四个与后面的不同
             const config: PokeConfig = {
                 x: this._space + i * (this._space + GameMainScene._pokeWidth), y: this._margin_top,
-                off: { openDrop: false, fixed: { is: true, type: 'MODE' } }
+                off: { openDrop: false, fixed: { is: true, type: 'MODE', storey: 1 } }
             };
             if (i < 4) {
                 config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
@@ -64,7 +64,7 @@ class GameMainScene extends SceneBase {
             const config: PokeConfig = {
                 x: this._space + i * (this._space + GameMainScene._pokeWidth),
                 y: this._margin_top * 2 + GameMainScene._pokeHeight,
-                off: { openDrop: false, openAdsorb: false, point: { col: i, row: 0 }, fixed: { is: true, type: 'BOX' } }
+                off: { openDrop: false, openAdsorb: false, point: { col: i, row: 0 }, fixed: { is: true, type: 'BOX', storey: 2 } }
             };
             config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
             const poke: Poke = new Poke(config);

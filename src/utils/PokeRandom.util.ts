@@ -13,7 +13,10 @@ interface PokeConfig {
         fixed: {
             // 是否是固定位置
             is: boolean,
-            type: FixedType
+            type: FixedType,
+            // 层级 (1: 表示固定列的第一行, 2: 表示固定列的第二行)
+            // 1 对应
+            storey: number
         },
         imageConfig?: ImageConfig,
         // 是否开启拖拽，[false: 关闭拖拽，true: 启动拖拽]
@@ -96,7 +99,7 @@ class PokeRandomUtil {
                     figure: pokeInfoCreator.figure,
                     name: pokeInfoCreator.name,
                     point: { col: index, row },
-                    fixed: { is: false, type: null }
+                    fixed: { is: false, type: null, storey: -1 }
                 }
             });
             // 在每一次像已存在数组中添加新的`poke`对象时，将上一个`poke`的拖拽设置为关闭，同时吸附设置为关闭

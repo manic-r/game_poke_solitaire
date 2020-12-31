@@ -86,7 +86,7 @@ abstract class DropBase extends SceneBase {
         // TODO 目前先暂时按一个处理，原谅我！因为宽度刚刚好够一个！
         // TODO 中心固定的吸附有问题！
         let canMove: boolean = false;
-        if (PokeRuleUtil.Instance.checkPokeSiteColor(this.Child, hitPokes)) {
+        if (hitPokes/* PokeRuleUtil.Instance.checkPokeSiteColor(this.Child, hitPokes) */) {
             // 修改坐标信息数据
             // 修改移除元素的数据信息（被拽走的所在列）
             const movePokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[this.Config.off.point.col];
