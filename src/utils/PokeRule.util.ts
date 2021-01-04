@@ -13,6 +13,17 @@ type POKE_COLOR = 'RED' | 'BLACK';
 
 class PokeRuleUtil {
 
+    // 顶部间距
+    public static readonly MARGIN_TOP: number = 20;
+    // 纸牌设置的宽度（与exml组件同步）
+    public static readonly POKE_WIDTH: number = 60;
+    // 纸牌设置的高度（与exml组件同步）
+    public static readonly POKE_HEIGHT: number = 86;
+    // 列个数
+    public static readonly COL_NUM: number = 8;
+    // 缝隙宽度
+    protected _space: number = 0;
+
     private static _manager: PokeRuleUtil;
 
     constructor() { }
@@ -20,12 +31,17 @@ class PokeRuleUtil {
     public static get Instance() {
         if (PokeRuleUtil._manager == null) {
             PokeRuleUtil._manager = new PokeRuleUtil();
+            const stage: egret.Stage = SceneManagerUtil.Instance.rootLayer.stage;
+            // 计算空隙大小（必要）
+            PokeRuleUtil._manager._space = (stage.stageWidth - PokeRuleUtil.COL_NUM * PokeRuleUtil.POKE_WIDTH) / (PokeRuleUtil.COL_NUM + 1);
         }
         return PokeRuleUtil._manager;
     }
 
     // 扑克牌队列
     public pokeQueue: Poke[][] = [];
+    // 聚合队列
+    public GearsBox: Poke[] = [];
     // 顶部固定队列
     public topFixedArray: Poke[] = [];
     // 中间固定队列
@@ -65,6 +81,21 @@ class PokeRuleUtil {
             PokeRandomUtil.computeCapePoint(rowArray[rowArray.length - 1])
         )
     }
+
+    /**
+     * 获取缝隙宽度
+     *
+     * @readonly
+     * @type {number}
+     * @memberof PokeRuleUtil
+     */
+    public get space(): number {
+        return this._space;
+    }
+
+    // public layout() {
+
+    // }
 
     /**
      * 获取全部碰撞点
@@ -108,6 +139,22 @@ class PokeRuleUtil {
         const hitFigure: number = Number(hitPoke.config.off.figure);
         if ((localFigure + 1) !== hitFigure) return false;
         return true;
+    }
+
+    /**
+     * 计算扑克牌自动归位
+     */
+    public handlePokeAccordMove() {
+        // 1. 判断每一组最后一张是否是`A`
+        PokeRuleUtil.Instance.pokeQueue
+            .forEach(array => {
+                // 获取最后一张牌
+                const lastPoke: Poke = array.pop();
+                // 如果为空，则不做处理。不为空 进入逻辑
+                if (lastPoke) {
+
+                }
+            })
     }
 
     // 1. 获取所有碰撞点集合
