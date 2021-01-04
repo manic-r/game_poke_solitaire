@@ -16,6 +16,8 @@ abstract class DropBase extends SceneBase {
     private _BEFORE_DROP_X: number;
     // 拖拽前所在位置: y
     private _BEFORE_DROP_Y: number;
+    // 移动锁定(true: 锁定, false: 非锁定)
+    private moveClock: boolean;
 
     // 拖拽遮罩组件名称
     public static MASK_OF_POKE: string = 'MASK_OF_POKE';
@@ -51,7 +53,7 @@ abstract class DropBase extends SceneBase {
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.centerFixedArray))
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.pokeQueue))
         PokeRuleUtil.Instance.debugCode_GetPokeInfo(this.Child, 'onTouchBegin 操作前, 当前对象：');
-        if (!this.Child.config.off.openDrop) return;
+        if (!this.Child.config.off.openDrop || this.moveClock) return;
         this.XTouch = stageX;
         this.YTouch = stageY;
         this._BEFORE_DROP_X = this.Child.x;
@@ -66,6 +68,8 @@ abstract class DropBase extends SceneBase {
 
     private onTouchMove({ stageX, stageY }: egret.TouchEvent) {
         if (!this.dropMoveValid() || !this.Child.config.off.openDrop) return;
+        // 开启移动锁定
+        this.moveClock = true;
         // 根据定位点，移动的x像素大小
         const moveX: number = stageX - this.XTouch;
         // 根据定位点，移动的y像素大小

@@ -30,7 +30,8 @@ class DropBaseUtil {
      * 移动动画
      */
     public static moveTween(target: any, { x, y }) {
-        egret.Tween.get(target).to({ x, y }, 300, egret.Ease.sineIn);
+        egret.Tween.get(target).to({ x, y }, 300, egret.Ease.sineIn)
+            .call(() => /* 应该是全局锁 */ target.moveClock = false);
     }
 
     /**
