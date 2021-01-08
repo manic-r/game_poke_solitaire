@@ -31,11 +31,11 @@ class DropBaseUtil {
      */
     public static moveTween(target: any, { x, y }) {
         egret.Tween.get(target).to({ x, y }, 300, egret.Ease.sineIn)
-            .call(() => /* 应该是全局锁 */ target.moveClock = false);
+            .call(() => DropBaseUtil.unClock());
     }
 
     /**
-     * 获取选中的组件
+     * 获取选中的组件(拖拽标记的)
      */
     public static getSelectedPoke(name: string): Poke {
         // 获取做拽的控件内容
@@ -107,11 +107,43 @@ class DropBaseUtil {
     public static getCollisionCheck(poke: Poke): Poke {
         // 获取全部碰撞扑克牌
         const collision: Poke[] = DropBaseUtil.getCollisionChecks(poke);
-        console.log('collision', collision)
         // TODO 是否需要做判断操作 还是只是获取第一个
         if (collision.length === 1) {
             return collision[0];
         }
+    }
+
+    /**
+     * 验证是否是当前扑克牌对象
+     * @param poke 扑克牌对象
+     * @returns { true: 是, false: 不是 }
+     */
+    public static isDropNow(poke: Poke): boolean {
+        if (!poke) return false;
+        const select: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
+        return select.name === poke.name;
+    }
+
+    /**
+     * 锁定拖拽（控制移动时全局只可同时移动一个）
+     * (true: 锁定, false: 非锁定)
+     */
+    public static clock() {
+        SceneManagerUtil.Instance.rootLayer.stage['clock'] = true;
+    }
+
+    /**
+     * 解锁拖拽
+     */
+    public static unClock() {
+        SceneManagerUtil.Instance.rootLayer.stage['clock'] = false;
+    }
+
+    /**
+     * 获取拖拽锁定状态
+     */
+    public static isClock(): boolean {
+        return SceneManagerUtil.Instance.rootLayer.stage['clock'];
     }
 }
 
