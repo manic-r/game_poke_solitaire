@@ -64,6 +64,8 @@ class Poke extends DropBase {
             return false;
         }
         // 碰撞检测
+        const hitPokes: Poke = DropBaseUtil.getCollisionCheck(this);
+        console.log(hitPokes)
         return true;
     }
 }

@@ -19,6 +19,7 @@
 		"bin-debug/ThemeAdapter.js",
 		"bin-debug/AssetAdapter.js",
 		"bin-debug/Main.js",
+		"bin-debug/debug/console.util.js",
 		"bin-debug/game/interfaces/image.config.js",
 		"bin-debug/game/interfaces/mask.type.js",
 		"bin-debug/game/interfaces/poke.info.creator.js",
