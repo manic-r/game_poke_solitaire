@@ -121,6 +121,7 @@ class DropBaseUtil {
     public static isDropNow(poke: Poke): boolean {
         if (!poke) return false;
         const select: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
+        if (!select) return false;
         return select.name === poke.name;
     }
 

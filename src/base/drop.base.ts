@@ -85,8 +85,8 @@ abstract class DropBase extends SceneBase {
          * 1. 松手时是否时当前控件(前置已验证是当前控件，后续可直接使用`this.Child`)
          * 2. 控件是否是开启可拖拽
          */
-        const dropPoke: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
-        if (!DropBaseUtil.isDropNow(dropPoke) || !this.Child.config.off.openDrop) {
+        // const dropPoke: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
+        if (!DropBaseUtil.isDropNow(this.Child) || !this.Child.config.off.openDrop) {
             DropBaseUtil.onTouchEndHandle(false);
             return;
         }
