@@ -16,7 +16,7 @@ class Poke extends DropBase {
         // 构造属性
         this.initConfig();
         // 获取扩展配置
-        const otherConfig = this.config.off || { fixed: { is: null, type: null, storey: -1 } };
+        const otherConfig = this.config.off || { fixed: { is: null, type: null, storey: null } };
         // 创建图片
         this.createImage(otherConfig.imageConfig);
     }

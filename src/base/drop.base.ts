@@ -47,9 +47,6 @@ abstract class DropBase extends SceneBase {
     }
 
     private onTouchBegin({ stageX, stageY }: egret.TouchEvent) {
-        console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.topFixedArray))
-        console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.centerFixedArray))
-        console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.pokeQueue))
         PokeRuleUtil.Instance.debugCode_GetPokeInfo(this.Child, 'onTouchBegin 操作前, 当前对象：');
         if (DropBaseUtil.isClock() || !this.Child.config.off.openDrop) return;
         this.XTouch = stageX;
@@ -102,11 +99,10 @@ abstract class DropBase extends SceneBase {
             const movePokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[this.Config.off.point.col];
             // 移除元素
             movePokeArray.pop();
-            console.log(`原始列：movePokeArray：${this.Config.off.point.col}`, movePokeArray, PokeRuleUtil.Instance.debugCode_GetPokeConfig(movePokeArray))
             // 将当前末尾元素设置可拖拽和吸附
             // 如果是最后一个元素，获取当前列的位置，获取对应的固定图像，设置为可吸附
             if (movePokeArray.length === 0) {
-                const fixed: Poke = PokeRuleUtil.Instance.centerFixedArray[this.Config.off.point.col];
+                const fixed: Poke = PokeRuleUtil.Instance.CenterFixedBox[this.Config.off.point.col];
                 fixed.config.off.openAdsorb = true;
             } else {
                 const tailPoke: Poke = this.root.getChildByName(movePokeArray[movePokeArray.length - 1].name) as Poke;
@@ -123,14 +119,13 @@ abstract class DropBase extends SceneBase {
             const addPokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[hitPokes.config.off.point.col];
             // 如果`addPokeArray`为空，则表示中心吸附控件抛露，此时设置吸附控件为不可以吸附
             if (addPokeArray.length === 0) {
-                const fixed: Poke = PokeRuleUtil.Instance.centerFixedArray[hitPokes.config.off.point.col];
+                const fixed: Poke = PokeRuleUtil.Instance.CenterFixedBox[hitPokes.config.off.point.col];
                 fixed.config.off.openAdsorb = false;
             }
             // 修改元素坐标
             this.Child.config.off.point.col = hitPokes.config.off.point.col;
             this.Child.config.off.point.row = addPokeArray.length;// lastPoke.config.off.fixed.is ? 0 : // lastPoke.config.off.point.row/*  + 1 */;
             addPokeArray.push(this.Child);
-            console.log('修改完坐标的当前对象集合', PokeRuleUtil.Instance.debugCode_GetPokeConfig([this.Child]), PokeRuleUtil.Instance.pokeQueue[hitPokes.config.off.point.col]);
 
             // 计算位置
             const point: egret.Point = PokeRandomUtil.computeNextPokePoint(hitPokes);
@@ -148,8 +143,6 @@ abstract class DropBase extends SceneBase {
         // ================= 碰撞检测 end =================
         // 统一处理
         DropBaseUtil.onTouchEndHandle(canMove);
-
-        // console.log(PokeRuleUtil.Instance.pokeQueue, PokeRuleUtil.Instance.centerFixedArray)
     }
 
     /**
