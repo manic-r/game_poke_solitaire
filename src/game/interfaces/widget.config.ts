@@ -22,12 +22,13 @@ interface WidgetConfig {
         // 是否开启拖拽，[false: 关闭拖拽，true: 启动拖拽]
         openDrop?: boolean,
         // 扑克牌 三属性
-        // 花色
-        type?: string,
-        // 字号
-        figure?: string,
-        // 名称
-        name?: string,
+        poke?: PokeInfoCreator,
+        // // 花色
+        // type?: string,
+        // // 字号
+        // figure?: string,
+        // // 名称
+        // name?: string,
         // 是否开启吸附功能
         openAdsorb?: boolean,
         // 扑克牌生成的布局结构中，当前扑克牌所对应的下标，从零开始
