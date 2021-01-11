@@ -77,6 +77,8 @@ class DropBaseUtil {
         if (!canMove) {
             // 重置回到上一次的位置
             DropBaseUtil.moveTween(poke, { x: poke['_BEFORE_DROP_X'], y: poke['_BEFORE_DROP_Y'] });
+        } else {
+            DropBaseUtil.unClock();
         }
     }
 

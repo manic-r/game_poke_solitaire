@@ -63,9 +63,50 @@ class Poke extends DropBase {
         if (!DropBaseUtil.isDropNow(this) || !this.config.off.openDrop) {
             return false;
         }
-        // 碰撞检测
+        // 获取碰撞点
         const hitPokes: Poke = DropBaseUtil.getCollisionCheck(this);
-        console.log(hitPokes)
+        // 如果未碰撞或者碰撞逻辑不满足时（交叉减小）返回
+        if (!hitPokes /* || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes) */) {
+            return false;
+        }
+        // 碰撞逻辑
+        // 修改坐标信息数据
+        // 修改移除元素的数据信息（被拽走的所在列）
+        const movePokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[this.config.off.point.col];
+        // 移除元素
+        movePokeArray.pop();
+        // 将当前末尾元素设置可拖拽和吸附
+        // 如果是最后一个元素，获取当前列的位置，获取对应的固定图像，设置为可吸附
+        if (movePokeArray.length === 0) {
+            const fixed: Poke = PokeRuleUtil.Instance.CenterFixedBox[this.config.off.point.col];
+            fixed.config.off.openAdsorb = true;
+        } else {
+            const tailPoke: Poke = this.root.getChildByName(movePokeArray[movePokeArray.length - 1].name) as Poke;
+            tailPoke.config.off.openAdsorb = true;
+            tailPoke.config.off.openDrop = true;
+        }
+
+        // 将碰撞检测覆盖的扑克牌设置不可拖拽和吸附
+        const lastPoke: Poke = this.root.getChildByName(hitPokes.name) as Poke;
+        lastPoke.config.off.openAdsorb = false;
+        lastPoke.config.off.openDrop = false;
+
+        // 修改增加元素的数组信息（吸附检测对应的）
+        const addPokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[hitPokes.config.off.point.col];
+        // 如果`addPokeArray`为空，则表示中心吸附控件抛露，此时设置吸附控件为不可以吸附
+        if (addPokeArray.length === 0) {
+            const fixed: Poke = PokeRuleUtil.Instance.CenterFixedBox[hitPokes.config.off.point.col];
+            fixed.config.off.openAdsorb = false;
+        }
+        // 修改元素坐标
+        this.config.off.point.col = hitPokes.config.off.point.col;
+        this.config.off.point.row = addPokeArray.length;// lastPoke.config.off.fixed.is ? 0 : // lastPoke.config.off.point.row/*  + 1 */;
+        addPokeArray.push(this);
+
+        // 计算位置
+        const point: egret.Point = PokeRandomUtil.computeNextPokePoint(hitPokes);
+        // 移动扑克牌
+        DropBaseUtil.moveTween(this, { x: point.x, y: point.y });
         return true;
     }
 }
