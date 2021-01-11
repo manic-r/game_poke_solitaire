@@ -87,7 +87,6 @@ class DropBaseUtil {
     public static getCollisionChecks(poke: Poke): Poke[] {
         // 获取全部碰撞点（强制重新获取）
         const hitPoints: PokePositions = PokeRuleUtil.Instance.getHitPoints(true);
-        // console.log('这是碰撞点：', hitPoints)
         // 记录碰撞点对应的扑克牌对象
         const hitPokes: Poke[] = [];
         hitPoints.filter(hitPoint => hitPoint.poke.name !== poke.name).forEach(hitPoint => {

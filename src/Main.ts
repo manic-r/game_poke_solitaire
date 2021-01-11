@@ -86,7 +86,7 @@ class Main extends eui.UILayer {
             //加载皮肤主题配置文件,可以手动修改这个文件。替换默认皮肤。
             let theme = new eui.Theme("resource/default.thm.json", this.stage);
             theme.addEventListener(eui.UIEvent.COMPLETE, () => {
-                resolve();
+                resolve(null);
             }, this);
 
         })

@@ -1,6 +1,6 @@
 // 固定扑克牌类型 BOX: 可放置  MODE：不可放置
 type FixedType = 'BOX' | 'MODE';
-
+type FixedStorey = 'TopFixedBox' | 'GearsBox' | 'CenterFixedBox' | 'pokeQueue';
 interface PokeConfig {
     x?: number,
     y?: number,
@@ -14,9 +14,9 @@ interface PokeConfig {
             // 是否是固定位置
             is: boolean,
             type: FixedType,
-            // 层级 (1: 表示固定列的第一行, 2: 表示固定列的第二行)
-            // 1 对应
-            storey: number
+            // 对应的fixed框id
+            storey: FixedStorey,
+            pokeName?: string
         },
         imageConfig?: ImageConfig,
         // 是否开启拖拽，[false: 关闭拖拽，true: 启动拖拽]
@@ -93,7 +93,7 @@ class PokeRandomUtil {
                     figure: pokeInfoCreator.figure,
                     name: pokeInfoCreator.name,
                     point: { col: index, row },
-                    fixed: { is: false, type: null, storey: -1 }
+                    fixed: { is: false, type: null, storey: 'pokeQueue' }
                 }
             });
             // 在每一次像已存在数组中添加新的`poke`对象时，将上一个`poke`的拖拽设置为关闭，同时吸附设置为关闭
@@ -120,7 +120,7 @@ class PokeRandomUtil {
             // 前四个与后面的不同
             const config: PokeConfig = {
                 x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
-                off: { openDrop: false, fixed: { is: true, type: 'BOX', storey: 1 } }
+                off: { openDrop: false, fixed: { is: true, type: 'BOX', storey: 'TopFixedBox' } }
             };
             config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
             config.off.openAdsorb = true;
@@ -142,7 +142,7 @@ class PokeRandomUtil {
             // 前四个与后面的不同
             const config: PokeConfig = {
                 x: PokeRuleUtil.Instance.space + (i + index) * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
-                off: { openDrop: false, fixed: { is: true, type: 'MODE', storey: 1 } }
+                off: { openDrop: false, fixed: { is: true, type: 'MODE', storey: 'GearsBox' } }
             };
             config.off.point = { col: i, row: 0 };
             config.skinName = 'resource/eui_skins/games/PokeComponentSkin.exml';
@@ -163,7 +163,7 @@ class PokeRandomUtil {
             const config: PokeConfig = {
                 x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH),
                 y: PokeRuleUtil.MARGIN_TOP * 2 + PokeRuleUtil.POKE_HEIGHT,
-                off: { openDrop: false, openAdsorb: false, point: { col: i, row: 0 }, fixed: { is: true, type: 'BOX', storey: 2 } }
+                off: { openDrop: false, openAdsorb: false, point: { col: i, row: 0 }, fixed: { is: true, type: 'BOX', storey: 'CenterFixedBox' } }
             };
             config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
             const poke: Poke = new Poke(config);
