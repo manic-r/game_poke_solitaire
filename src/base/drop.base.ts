@@ -51,7 +51,7 @@ abstract class DropBase extends SceneBase {
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.centerFixedArray))
         console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.pokeQueue))
         PokeRuleUtil.Instance.debugCode_GetPokeInfo(this.Child, 'onTouchBegin 操作前, 当前对象：');
-        if (!this.Child.config.off.openDrop) return;
+        if (DropBaseUtil.isClock() || !this.Child.config.off.openDrop) return;
         this.XTouch = stageX;
         this.YTouch = stageY;
         this._BEFORE_DROP_X = this.Child.x;
@@ -66,6 +66,8 @@ abstract class DropBase extends SceneBase {
 
     private onTouchMove({ stageX, stageY }: egret.TouchEvent) {
         if (!this.dropMoveValid() || !this.Child.config.off.openDrop) return;
+        // 开启移动锁定
+        DropBaseUtil.clock();
         // 根据定位点，移动的x像素大小
         const moveX: number = stageX - this.XTouch;
         // 根据定位点，移动的y像素大小
@@ -78,15 +80,23 @@ abstract class DropBase extends SceneBase {
     }
 
     private onTouchEnd() {
-        if (!this.Child.config.off.openDrop) return;
-        console.log('执行End')
+        /**
+         * 拦截:
+         * 1. 松手时是否时当前控件(前置已验证是当前控件，后续可直接使用`this.Child`)
+         * 2. 控件是否是开启可拖拽
+         */
+        // const dropPoke: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
+        if (!DropBaseUtil.isDropNow(this.Child) || !this.Child.config.off.openDrop) {
+            DropBaseUtil.onTouchEndHandle(false);
+            return;
+        }
         // ================= 碰撞检测 start =================
         const hitPokes: Poke = DropBaseUtil.getCollisionCheck(this.Child);
         PokeRuleUtil.Instance.debugCode_GetPokeInfo(hitPokes, '碰撞的扑克牌信息')
         // TODO 目前先暂时按一个处理，原谅我！因为宽度刚刚好够一个！
         // TODO 中心固定的吸附有问题！
         let canMove: boolean = false;
-        if (hitPokes/* PokeRuleUtil.Instance.checkPokeSiteColor(this.Child, hitPokes) */) {
+        if (hitPokes /* PokeRuleUtil.Instance.checkPokeSiteColor(this.Child, hitPokes) */) {
             // 修改坐标信息数据
             // 修改移除元素的数据信息（被拽走的所在列）
             const movePokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[this.Config.off.point.col];

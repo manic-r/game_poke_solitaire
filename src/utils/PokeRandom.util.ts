@@ -56,12 +56,6 @@ class PokeRandomUtil {
     static readonly MAX_TYPE_NUM: number = 13;
     // 每张牌上下间距
     static readonly MARGIN_TOP: number = 30;
-    // 列个数
-    static readonly _colNum: number = 8;
-    // 缝隙宽度
-    protected static _space: number = 0;
-    // 顶部间距
-    static readonly _margin_top: number = 20;
 
     /**
      * 获取扑克🎴布局
@@ -118,6 +112,68 @@ class PokeRandomUtil {
     }
 
     /**
+     * 创建顶部固定盒子
+     */
+    public static createTopFixedBox() {
+        const result: Poke[] = [];
+        for (let i = 0; i < 4; i++) {
+            // 前四个与后面的不同
+            const config: PokeConfig = {
+                x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
+                off: { openDrop: false, fixed: { is: true, type: 'BOX', storey: 1 } }
+            };
+            config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
+            config.off.openAdsorb = true;
+            config.off.point = { col: i, row: 0 };
+            const poke: Poke = new Poke(config);
+            // 记录
+            result.push(poke);
+        }
+        return result;
+    }
+
+    /**
+     * 创建收纳盒
+     */
+    public static createGearsBox(): Poke[] {
+        const result: Poke[] = [];
+        const index: number = 4;
+        for (let i = 0; i < 4; i++) {
+            // 前四个与后面的不同
+            const config: PokeConfig = {
+                x: PokeRuleUtil.Instance.space + (i + index) * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
+                off: { openDrop: false, fixed: { is: true, type: 'MODE', storey: 1 } }
+            };
+            config.off.point = { col: i, row: 0 };
+            config.skinName = 'resource/eui_skins/games/PokeComponentSkin.exml';
+            const poke: Poke = new Poke(config);
+            // 记录
+            result.push(poke);
+        }
+        return result;
+    }
+
+    /**
+     * 创建中心固定格子
+     */
+    public static createCenterFixedBox(): Poke[] {
+        const result: Poke[] = [];
+        for (let i = 0; i < PokeRuleUtil.COL_NUM; i++) {
+            // 前四个与后面的不同
+            const config: PokeConfig = {
+                x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH),
+                y: PokeRuleUtil.MARGIN_TOP * 2 + PokeRuleUtil.POKE_HEIGHT,
+                off: { openDrop: false, openAdsorb: false, point: { col: i, row: 0 }, fixed: { is: true, type: 'BOX', storey: 2 } }
+            };
+            config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
+            const poke: Poke = new Poke(config);
+            // 记录
+            result.push(poke);
+        }
+        return result;
+    }
+
+    /**
      * 计算四个点坐标
      */
     public static computeCapePoint(poke: Poke): PokePosition {
@@ -125,9 +181,9 @@ class PokeRandomUtil {
         return {
             poke,
             topLeft: new egret.Point(x, y),
-            topRight: new egret.Point(x + GameMainScene._pokeWidth, y),
-            bottomLeft: new egret.Point(x, y + GameMainScene._pokeHeight),
-            bottomRight: new egret.Point(x + GameMainScene._pokeWidth, y + GameMainScene._pokeHeight)
+            topRight: new egret.Point(x + PokeRuleUtil.POKE_WIDTH, y),
+            bottomLeft: new egret.Point(x, y + PokeRuleUtil.POKE_HEIGHT),
+            bottomRight: new egret.Point(x + PokeRuleUtil.POKE_WIDTH, y + PokeRuleUtil.POKE_HEIGHT)
         };
     }
 
