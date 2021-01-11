@@ -1,16 +1,3 @@
-/**
- * 点位坐标
- */
-interface PokePosition {
-    poke: Poke;
-    topLeft: egret.Point;
-    topRight: egret.Point;
-    bottomRight: egret.Point;
-    bottomLeft: egret.Point;
-}
-type PokePositions = PokePosition[];
-type POKE_COLOR = 'RED' | 'BLACK';
-
 class PokeRuleUtil {
 
     // 顶部间距

@@ -141,14 +141,9 @@ class DropBaseUtil {
 
     /**
      * 获取拖拽锁定状态
+     * @returns true: 锁定, false: 非锁定
      */
     public static isClock(): boolean {
         return SceneManagerUtil.Instance.rootLayer.stage['clock'];
     }
-}
-
-interface CreateMaskType {
-    name?: string,
-    color?: number,
-    alpha?: number
 }

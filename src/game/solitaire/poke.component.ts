@@ -1,11 +1,10 @@
 class Poke extends DropBase {
-
     // 图片原图 width: height = 7: 10
     // width: 105
     // height: 150
-    config: PokeConfig;
+    config: WidgetConfig;
 
-    constructor(config: PokeConfig = {}, group_code?: string) {
+    constructor(config: WidgetConfig = {}, group_code?: string) {
         group_code = group_code || 'POKE_ONLY';
         super(group_code);
         this.config = config;
@@ -45,5 +44,26 @@ class Poke extends DropBase {
         image.width = this.width;
         image.height = this.height;
         this.addChild(image)
+    }
+
+    protected beforeTouchBeginHandle(): boolean {
+        return !DropBaseUtil.isClock() && this.config.off.openDrop;
+    }
+
+    protected beforeTouchMoveHandle(): boolean {
+        return this.dropMoveValid() && this.config.off.openDrop;
+    }
+
+    protected beforeTouchEndHandle(): boolean {
+        /**
+         * 拦截:
+         * 1. 松手时是否时当前控件(前置已验证是当前控件，后续可直接使用`this.Child`)
+         * 2. 控件是否是开启可拖拽
+         */
+        if (!DropBaseUtil.isDropNow(this) || !this.config.off.openDrop) {
+            return false;
+        }
+        // 碰撞检测
+        return true;
     }
 }

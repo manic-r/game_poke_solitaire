@@ -1,49 +1,3 @@
-// 固定扑克牌类型 BOX: 可放置  MODE：不可放置
-type FixedType = 'BOX' | 'MODE';
-type FixedStorey = 'TopFixedBox' | 'GearsBox' | 'CenterFixedBox' | 'pokeQueue';
-interface PokeConfig {
-    x?: number,
-    y?: number,
-    width?: number,
-    height?: number,
-    skinName?: string,
-    // 非组件原有属性，为了不污染本身属性，使用此属性进行过滤
-    off?: {
-        // 是否是固定位置
-        fixed: {
-            // 是否是固定位置
-            is: boolean,
-            type: FixedType,
-            // 对应的fixed框id
-            storey: FixedStorey,
-            pokeName?: string
-        },
-        imageConfig?: ImageConfig,
-        // 是否开启拖拽，[false: 关闭拖拽，true: 启动拖拽]
-        openDrop?: boolean,
-        // 扑克牌 三属性
-        // 花色
-        type?: string,
-        // 字号
-        figure?: string,
-        // 名称
-        name?: string,
-        // 是否开启吸附功能
-        openAdsorb?: boolean,
-        // 扑克牌生成的布局结构中，当前扑克牌所对应的下标，从零开始
-        point?: {
-            // 第几列（对应结构中最外层）
-            col: number,
-            // 第几行（对应机构中第二层）
-            row: number
-        }
-    }
-}
-
-interface ImageConfig {
-    source?: string
-}
-
 class PokeRandomUtil {
 
     // url常量地址
@@ -118,7 +72,7 @@ class PokeRandomUtil {
         const result: Poke[] = [];
         for (let i = 0; i < 4; i++) {
             // 前四个与后面的不同
-            const config: PokeConfig = {
+            const config: WidgetConfig = {
                 x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
                 off: { openDrop: false, fixed: { is: true, type: 'BOX', storey: 'TopFixedBox' } }
             };
@@ -140,7 +94,7 @@ class PokeRandomUtil {
         const index: number = 4;
         for (let i = 0; i < 4; i++) {
             // 前四个与后面的不同
-            const config: PokeConfig = {
+            const config: WidgetConfig = {
                 x: PokeRuleUtil.Instance.space + (i + index) * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
                 off: { openDrop: false, fixed: { is: true, type: 'MODE', storey: 'GearsBox' } }
             };
@@ -160,7 +114,7 @@ class PokeRandomUtil {
         const result: Poke[] = [];
         for (let i = 0; i < PokeRuleUtil.COL_NUM; i++) {
             // 前四个与后面的不同
-            const config: PokeConfig = {
+            const config: WidgetConfig = {
                 x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH),
                 y: PokeRuleUtil.MARGIN_TOP * 2 + PokeRuleUtil.POKE_HEIGHT,
                 off: { openDrop: false, openAdsorb: false, point: { col: i, row: 0 }, fixed: { is: true, type: 'BOX', storey: 'CenterFixedBox' } }
