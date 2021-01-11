@@ -47,7 +47,6 @@ abstract class DropBase extends SceneBase {
     }
 
     private onTouchBegin({ stageX, stageY }: egret.TouchEvent) {
-        PokeRuleUtil.Instance.debugCode_GetPokeInfo(this.Child, 'onTouchBegin 操作前, 当前对象：');
         if (DropBaseUtil.isClock() || !this.Child.config.off.openDrop) return;
         this.XTouch = stageX;
         this.YTouch = stageY;
@@ -60,6 +59,8 @@ abstract class DropBase extends SceneBase {
         // 拖拽时居上
         this.root.setChildIndex(this.root.getChildByName(this.name), 100);
     }
+
+    // protected abstract onBeforeTouchBegin(): boolean;
 
     private onTouchMove({ stageX, stageY }: egret.TouchEvent) {
         if (!this.dropMoveValid() || !this.Child.config.off.openDrop) return;
@@ -89,7 +90,6 @@ abstract class DropBase extends SceneBase {
         }
         // ================= 碰撞检测 start =================
         const hitPokes: Poke = DropBaseUtil.getCollisionCheck(this.Child);
-        PokeRuleUtil.Instance.debugCode_GetPokeInfo(hitPokes, '碰撞的扑克牌信息')
         // TODO 目前先暂时按一个处理，原谅我！因为宽度刚刚好够一个！
         // TODO 中心固定的吸附有问题！
         let canMove: boolean = false;
@@ -131,11 +131,6 @@ abstract class DropBase extends SceneBase {
             const point: egret.Point = PokeRandomUtil.computeNextPokePoint(hitPokes);
             // 移动扑克牌
             DropBaseUtil.moveTween(this, { x: point.x, y: point.y });
-            PokeRuleUtil.Instance.debugCode_GetPokeInfo(this.Child, 'onTouchEnd 操作后, 当前对象：');
-            PokeRuleUtil.Instance.debugCode_GetPokeInfo(lastPoke, 'onTouchEnd 操作后, 碰撞对象：');
-            if (movePokeArray.length > 0) {
-                PokeRuleUtil.Instance.debugCode_GetPokeInfo(movePokeArray[movePokeArray.length - 1], 'onTouchEnd 操作后, 原始列最后一位对象：');
-            }
             canMove = true;
         } else {
             canMove = false;

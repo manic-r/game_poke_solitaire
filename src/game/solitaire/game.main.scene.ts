@@ -14,10 +14,5 @@ class GameMainScene extends SceneBase {
         PokeRuleUtil.Instance.pokeQueue = PokeRandomUtil.creator(PokeRuleUtil.Instance.CenterFixedBox);
         // 手指离开时, 为了处理鼠标移动过快，导致的图片跟不上产生的问题
         this.addEventListener(egret.TouchEvent.TOUCH_END, () => DropBaseUtil.onTouchEndHandle(false), this);
-
-        console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.TopFixedBox))
-        console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.GearsBox))
-        console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.CenterFixedBox))
-        console.log(PokeRuleUtil.Instance.debugCode_GetPokeConfig(PokeRuleUtil.Instance.pokeQueue))
     }
 }

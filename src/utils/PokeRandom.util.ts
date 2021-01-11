@@ -16,7 +16,6 @@ interface PokeConfig {
             type: FixedType,
             // 对应的fixed框id
             storey: FixedStorey,
-            // 存储当前固定框放置的扑克牌名称
             pokeName?: string
         },
         imageConfig?: ImageConfig,

@@ -1,7 +1,8 @@
 class Poke extends DropBase {
+
     // 图片原图 width: height = 7: 10
-    // height: 150
     // width: 105
+    // height: 150
     config: PokeConfig;
 
     constructor(config: PokeConfig = {}, group_code?: string) {
@@ -31,7 +32,6 @@ class Poke extends DropBase {
             }
         }
     }
-
 
     /**
      * 创建图片
