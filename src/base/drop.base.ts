@@ -61,7 +61,7 @@ abstract class DropBase extends SceneBase {
         this._BEFORE_DROP_X = this.Child.x;
         this._BEFORE_DROP_Y = this.Child.y;
         // 记录当前拖拽的唯一值
-        DropBaseUtil.recordDropPoke(this._GROUP_CODE, this.Config.off.poke?.name);
+        DropBaseUtil.recordDropPoke(this._GROUP_CODE, this.Config.off.poke.name);
         // 放置遮罩
         DropBaseUtil.createMask(this, { name: DropBase.MASK_OF_POKE });
         // 拖拽时居上
@@ -112,7 +112,7 @@ abstract class DropBase extends SceneBase {
     public dropMoveValid() {
         const touchSelected: TouchSelected = this.stage[DropBase.TOUCH_SELECTED] as TouchSelected || { groupId: undefined, componentName: undefined };
         return this._GROUP_CODE == touchSelected.groupId
-            && this.Config.off.poke?.name == touchSelected.componentName;
+            && this.Config.off.poke.name == touchSelected.componentName;
     }
 
     /**

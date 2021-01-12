@@ -43,9 +43,11 @@ class PokeRandomUtil {
                     // 默认开启可吸附
                     openAdsorb: true,
                     imageConfig: { source: `resource/assets/Poke/${pokeInfoCreator.name}.jpg` },
-                    type: pokeInfoCreator.type,
-                    figure: pokeInfoCreator.figure,
-                    name: pokeInfoCreator.name,
+                    poke: {
+                        type: pokeInfoCreator.type,
+                        figure: pokeInfoCreator.figure,
+                        name: pokeInfoCreator.name
+                    },
                     point: { col: index, row },
                     fixed: { is: false, type: null, storey: 'pokeQueue' }
                 }

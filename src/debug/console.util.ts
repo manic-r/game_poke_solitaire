@@ -7,7 +7,7 @@ class ConsoleUtil {
         } = { a: '♥', b: '♠', c: '♦', d: '♣' };
         if (inputConsoleStr && inputConsoleStr.length > 0) console.log(inputConsoleStr);
         console.log('%c======================扑克牌详情 - start ==========================', 'color:#e1ddd8; font-size:12px;');
-        console.log(`%c扑克牌：${typeMap[input.config.off.type]} ${input.config.off.figure}, 第${input.config.off.point.col + 1}列, 第${input.config.off.point.row + 1}个`, 'color:#2cbdffb0; font-size:12px;');
+        console.log(`%c扑克牌：${typeMap[input.config.off.poke.type]} ${input.config.off.poke.figure}, 第${input.config.off.point.col + 1}列, 第${input.config.off.point.row + 1}个`, 'color:#2cbdffb0; font-size:12px;');
         console.log(`%c是否是固定框: ${input.config.off.fixed.is}, 固定盒子类型: ${input.config.off.fixed.type}`, 'color:#2cbdffb0; font-size:12px;');
         console.log(`%c已${input.config.off.openDrop ? ' 开启 ' : ' 关闭 '}拖拽[openDrop], 已${input.config.off.openAdsorb ? ' 开启 ' : ' 关闭 '}吸附[openAdsorb]`, 'color:#2cbdffb0; font-size:12px;')
         console.log('%c======================扑克牌详情 - end  ==========================', 'color:#e1ddd8; font-size:12px;');
@@ -26,7 +26,7 @@ class ConsoleUtil {
             array = [...(input as Poke[])];
         }
         array.forEach(row => {
-            console.log('%c' + typeMap[row.config.off.type] + '_ ' + row.config.off.figure, 'color:red;font-size:18px;');
+            console.log('%c' + typeMap[row.config.off.poke.type] + '_ ' + row.config.off.poke.figure, 'color:red;font-size:18px;');
         })
     }
 

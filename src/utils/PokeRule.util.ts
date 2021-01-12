@@ -118,12 +118,12 @@ class PokeRuleUtil {
         // a -> b | d; b -> a | c; c -> b | d; d -> a | c;
         // 处理花色
         const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
-        const localColor: POKE_COLOR = roleMap[localPoke.config.off.type];
-        const hitColor: POKE_COLOR = roleMap[hitPoke.config.off.type];
+        const localColor: POKE_COLOR = roleMap[localPoke.config.off.poke.type];
+        const hitColor: POKE_COLOR = roleMap[hitPoke.config.off.poke.type];
         if (localColor === hitColor) return false;
         // 处理文字序号
-        const localFigure: number = Number(localPoke.config.off.figure);
-        const hitFigure: number = Number(hitPoke.config.off.figure);
+        const localFigure: number = Number(localPoke.config.off.poke.figure);
+        const hitFigure: number = Number(hitPoke.config.off.poke.figure);
         if ((localFigure + 1) !== hitFigure) return false;
         return true;
     }

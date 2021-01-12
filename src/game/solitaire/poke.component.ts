@@ -8,7 +8,9 @@ class Poke extends DropBase {
         group_code = group_code || 'POKE_ONLY';
         super(group_code);
         this.config = config;
-        this.name = config.off.poke?.name;
+        if (config.off && config.off.poke) {
+            this.name = config.off.poke.name;
+        }
         this.root.addChild(this);
     }
 
