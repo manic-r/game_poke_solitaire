@@ -80,10 +80,6 @@ class PokeRuleUtil {
         return this._space;
     }
 
-    // public layout() {
-
-    // }
-
     /**
      * 获取全部碰撞点
      * @param bool 强制刷新
@@ -126,5 +122,42 @@ class PokeRuleUtil {
         const hitFigure: number = Number(hitPoke.config.off.poke.figure);
         if ((localFigure + 1) !== hitFigure) return false;
         return true;
+    }
+
+    /**
+     * 获取扑克牌即时坐标
+     * @param poke 扑克牌对象
+     */
+    public getPokeImmediatelyPoint(poke: Poke): {
+        // 第几列（对应结构中最外层）
+        col: number, 
+        // 第几行（对应机构中第二层）
+        row: number
+    } {
+        for (let colIndex in this.pokeQueue) {
+            for (let rowIndex in this.pokeQueue[colIndex]) {
+                if (this.pokeQueue[colIndex][rowIndex] === poke) {
+                    return { 
+                        col: Number(colIndex),
+                        row: Number(rowIndex)
+                    };
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取指定扑克牌其
+     * @param poke 扑克牌对象
+     */
+    public getPokeNextPokes(poke: Poke): Poke[] {
+        // 获取指定扑克牌所在的即时坐标
+        const point: { 
+            col: number, row: number
+        } = this.getPokeImmediatelyPoint(poke);
+        if (!point) return [];
+        const rowQueue: Poke[] = this.pokeQueue[point.col];
+        return rowQueue.slice(point.row);
     }
 }

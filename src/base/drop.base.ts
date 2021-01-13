@@ -12,18 +12,21 @@ abstract class DropBase extends SceneBase {
     static readonly TOUCH_SELECTED: string = '_TOUCH_SELECTED';
 
     // 横向移动位置
-    private XTouch: number;
+    public XTouch: number;
     // 纵向移动位置
-    private YTouch: number;
+    public YTouch: number;
     // 拖拽前所在位置: x
-    private _BEFORE_DROP_X: number;
+    public _BEFORE_DROP_X: number;
     // 拖拽前所在位置: y
-    private _BEFORE_DROP_Y: number;
+    public _BEFORE_DROP_Y: number;
 
     // 拖拽遮罩组件名称
     public static MASK_OF_POKE: string = 'MASK_OF_POKE';
     // 注册拖拽
     private _REGISTER: boolean;
+
+    // 记录选中时其下面整列扑克
+    private pokeNextPokes: Poke[] = [];
 
     /**
      * 构造函数
@@ -56,16 +59,22 @@ abstract class DropBase extends SceneBase {
 
     private onTouchBegin({ stageX, stageY }: egret.TouchEvent) {
         if (!this.beforeTouchBeginHandle()) return;
-        this.XTouch = stageX;
-        this.YTouch = stageY;
-        this._BEFORE_DROP_X = this.Child.x;
-        this._BEFORE_DROP_Y = this.Child.y;
         // 记录当前拖拽的唯一值
         DropBaseUtil.recordDropPoke(this._GROUP_CODE, this.Config.off.poke.name);
-        // 放置遮罩
-        DropBaseUtil.createMask(this, { name: DropBase.MASK_OF_POKE });
-        // 拖拽时居上
-        this.root.setChildIndex(this.root.getChildByName(this.name), 100);
+        // 获取其下所有扑克
+        this.pokeNextPokes = PokeRuleUtil.Instance.getPokeNextPokes(this.Child);
+        this.pokeNextPokes
+            .filter(row => row.config.off.openDrop)
+            .forEach(poke => {
+                poke.XTouch = stageX;
+                poke.YTouch = stageY;
+                poke._BEFORE_DROP_X = poke.x;
+                poke._BEFORE_DROP_Y = poke.y;
+                // 放置遮罩
+                DropBaseUtil.createMask(poke, { name: DropBase.MASK_OF_POKE });
+                // 拖拽时居上
+                this.root.setChildIndex(this.root.getChildByName(poke.name), 100);
+            })
     }
 
     /**
@@ -78,15 +87,21 @@ abstract class DropBase extends SceneBase {
         if (!this.beforeTouchMoveHandle()) return;
         // 开启移动锁定
         DropBaseUtil.clock();
-        // 根据定位点，移动的x像素大小
-        const moveX: number = stageX - this.XTouch;
-        // 根据定位点，移动的y像素大小
-        const moveY: number = stageY - this.YTouch;
-        this.XTouch = stageX;
-        this.YTouch = stageY;
-        // 移动当前画像
-        this.x = this.x + moveX;
-        this.y = this.y + moveY;
+        this.pokeNextPokes
+            .filter(row => row.config.off.openDrop)
+            .forEach((poke, index) => {
+                setTimeout(() => {
+                    // 根据定位点，移动的x像素大小
+                    const moveX: number = stageX - poke.XTouch;
+                    // 根据定位点，移动的y像素大小
+                    const moveY: number = stageY - poke.YTouch;
+                    poke.XTouch = stageX;
+                    poke.YTouch = stageY;
+                    // 移动当前画像
+                    poke.x = poke.x + moveX;
+                    poke.y = poke.y + moveY;
+                }, 50 * index);
+            })
     }
 
     /**

@@ -58,8 +58,9 @@ class PokeRandomUtil {
             if (result[index].length > 0) {
                 // 获取序列中最后一个对象
                 const pk: Poke = result[index][result[index].length - 1];
-                pk.config.off.openAdsorb = false;
-                pk.config.off.openDrop = false;
+                // TODO 暂时屏蔽，为了处理批量拖拽
+                // pk.config.off.openAdsorb = false;
+                // pk.config.off.openDrop = false;
 
             }
             result[index].push(poke);

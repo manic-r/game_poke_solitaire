@@ -74,6 +74,7 @@ class Poke extends DropBase {
         if (!hitPokes /* || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes) */) {
             return false;
         }
+        return;
         // 碰撞逻辑
         // 修改坐标信息数据
         // 修改移除元素的数据信息（被拽走的所在列）

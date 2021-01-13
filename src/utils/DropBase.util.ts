@@ -70,16 +70,18 @@ class DropBaseUtil {
         const poke: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
         if (!poke) return;
         // ================================================
-        // 移除遮罩
-        DropBaseUtil.removeMask(poke, DropBase.MASK_OF_POKE);
-        // 重置扑克牌记录
-        DropBaseUtil.deleteDropPoke();
-        if (!canMove) {
-            // 重置回到上一次的位置
-            DropBaseUtil.moveTween(poke, { x: poke['_BEFORE_DROP_X'], y: poke['_BEFORE_DROP_Y'] });
-        } else {
-            DropBaseUtil.unClock();
-        }
+        PokeRuleUtil.Instance.getPokeNextPokes(poke).forEach(row => {
+            // 移除遮罩
+            DropBaseUtil.removeMask(row, DropBase.MASK_OF_POKE);
+            // 重置扑克牌记录
+            DropBaseUtil.deleteDropPoke();
+            if (!canMove) {
+                // 重置回到上一次的位置
+                DropBaseUtil.moveTween(row, { x: row._BEFORE_DROP_X, y: row._BEFORE_DROP_Y });
+            } else {
+                DropBaseUtil.unClock();
+            }
+        })
     }
 
     /**
