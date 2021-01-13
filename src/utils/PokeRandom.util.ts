@@ -15,7 +15,7 @@ class PokeRandomUtil {
      * 获取扑克🎴布局
      * 布局结构 [ [Poke, Poke, ...], [Poke, Poke, ...], [Poke, Poke, ...], ... ]
      */
-    public static creator(input: Poke[]): Poke[][] {
+    public static creator(input: FixedBox[]): Poke[][] {
         // 声明扑克牌生成池对象
         const creator: PokeRandomCreator = new PokeRandomCreator();
         const length: number = input.length;
@@ -49,7 +49,7 @@ class PokeRandomUtil {
                         name: pokeInfoCreator.name
                     },
                     point: { col: index, row },
-                    fixed: { is: false, type: null, storey: 'pokeQueue' }
+                    fixed: { is: false, type: null, storey: 'pokeQueue', name: null }
                 }
             });
             // 在每一次像已存在数组中添加新的`poke`对象时，将上一个`poke`的拖拽设置为关闭，同时吸附设置为关闭
@@ -70,20 +70,20 @@ class PokeRandomUtil {
     /**
      * 创建顶部固定盒子
      */
-    public static createTopFixedBox() {
-        const result: Poke[] = [];
+    public static createTopFixedBox(): FixedBox[] {
+        const result: FixedBox[] = [];
         for (let i = 0; i < 4; i++) {
             // 前四个与后面的不同
             const config: WidgetConfig = {
                 x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
-                off: { openDrop: false, fixed: { is: true, type: 'BOX', storey: 'TopFixedBox' } }
+                off: { openDrop: false, fixed: { is: true, type: 'BOX', storey: 'TopFixedBox', name: `top_fixed_box_${i + 1}` } }
             };
             config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
             config.off.openAdsorb = true;
             config.off.point = { col: i, row: 0 };
-            const poke: Poke = new Poke(config);
+            const box: FixedBox = new FixedBox(config);
             // 记录
-            result.push(poke);
+            result.push(box);
         }
         return result;
     }
@@ -98,7 +98,7 @@ class PokeRandomUtil {
             // 前四个与后面的不同
             const config: WidgetConfig = {
                 x: PokeRuleUtil.Instance.space + (i + index) * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH), y: PokeRuleUtil.MARGIN_TOP,
-                off: { openDrop: false, fixed: { is: true, type: 'MODE', storey: 'GearsBox' } }
+                off: { openDrop: false, fixed: { is: true, type: 'MODE', storey: 'GearsBox', name: null } }
             };
             config.off.point = { col: i, row: 0 };
             config.skinName = 'resource/eui_skins/games/PokeComponentSkin.exml';
@@ -112,19 +112,22 @@ class PokeRandomUtil {
     /**
      * 创建中心固定格子
      */
-    public static createCenterFixedBox(): Poke[] {
-        const result: Poke[] = [];
+    public static createCenterFixedBox(): FixedBox[] {
+        const result: FixedBox[] = [];
         for (let i = 0; i < PokeRuleUtil.COL_NUM; i++) {
             // 前四个与后面的不同
             const config: WidgetConfig = {
                 x: PokeRuleUtil.Instance.space + i * (PokeRuleUtil.Instance.space + PokeRuleUtil.POKE_WIDTH),
                 y: PokeRuleUtil.MARGIN_TOP * 2 + PokeRuleUtil.POKE_HEIGHT,
-                off: { openDrop: false, openAdsorb: false, point: { col: i, row: 0 }, fixed: { is: true, type: 'BOX', storey: 'CenterFixedBox' } }
+                off: {
+                    openDrop: false, openAdsorb: false, point: { col: i, row: 0 },
+                    fixed: { is: true, type: 'BOX', storey: 'CenterFixedBox', name: `center_fixed_box_${i + 1}` }
+                }
             };
             config.skinName = 'resource/eui_skins/games/PokeBorderSkin.exml';
-            const poke: Poke = new Poke(config);
+            const box: FixedBox = new FixedBox(config);
             // 记录
-            result.push(poke);
+            result.push(box);
         }
         return result;
     }
@@ -132,10 +135,11 @@ class PokeRandomUtil {
     /**
      * 计算四个点坐标
      */
-    public static computeCapePoint(poke: Poke): PokePosition {
-        const { x, y }: Poke = poke;
+    public static computeCapePoint(input: Poke | FixedBox): PokePosition {
+        const { x, y }: Poke | FixedBox = input;
         return {
-            poke,
+            // poke,
+            component: input,
             topLeft: new egret.Point(x, y),
             topRight: new egret.Point(x + PokeRuleUtil.POKE_WIDTH, y),
             bottomLeft: new egret.Point(x, y + PokeRuleUtil.POKE_HEIGHT),
@@ -145,13 +149,13 @@ class PokeRandomUtil {
 
     /**
      * 根据参照的扑克牌对象，计算放在其下面的扑克牌对象位置
-     * @param poke 参照的扑克牌对象
+     * @param box 参照的扑克牌对象
      */
-    public static computeNextPokePoint(poke: Poke): egret.Point {
+    public static computeNextPokePoint(box: Box): egret.Point {
         // 判断是否是固定位置的对象，如果是，不做偏移
-        const marginTop: number = poke.config.off.fixed.is ? 0 : this.MARGIN_TOP;
+        const marginTop: number = box.config.off.fixed.is ? 0 : this.MARGIN_TOP;
         return new egret.Point(
-            poke.x, poke.y + marginTop
+            box.x, box.y + marginTop
         )
     }
 }

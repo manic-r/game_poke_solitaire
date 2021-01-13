@@ -27,6 +27,7 @@
 		"bin-debug/LoadingUI.js",
 		"bin-debug/game/interfaces/type.interface.js",
 		"bin-debug/game/interfaces/widget.config.js",
+		"bin-debug/game/solitaire/fixed.component.js",
 		"bin-debug/game/solitaire/game.main.scene.js",
 		"bin-debug/game/solitaire/poke.component.js",
 		"bin-debug/game/solitaire/start.scene.js",

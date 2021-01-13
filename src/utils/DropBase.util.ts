@@ -86,17 +86,17 @@ class DropBaseUtil {
      * 获取全部碰撞检测点对应的扑克牌对象
      * @param poke 当前操作的扑克
      */
-    public static getCollisionChecks(poke: Poke): Poke[] {
+    public static getCollisionChecks(poke: Poke): Box[] {
         // 获取全部碰撞点（强制重新获取）
         const hitPoints: PokePositions = PokeRuleUtil.Instance.getHitPoints(true);
         // 记录碰撞点对应的扑克牌对象
-        const hitPokes: Poke[] = [];
-        hitPoints.filter(hitPoint => hitPoint.poke.name !== poke.name).forEach(hitPoint => {
+        const hitPokes: Box[] = [];
+        hitPoints.filter(hitPoint => hitPoint.component.name !== poke.name).forEach(hitPoint => {
             const isHit: boolean = poke.hitTestPoint(hitPoint.topLeft.x, hitPoint.topLeft.y)
                 || poke.hitTestPoint(hitPoint.topRight.x, hitPoint.topRight.y)
                 || poke.hitTestPoint(hitPoint.bottomLeft.x, hitPoint.bottomLeft.y)
                 || poke.hitTestPoint(hitPoint.bottomRight.x, hitPoint.bottomRight.y);
-            if (isHit) hitPokes.push(hitPoint.poke);
+            if (isHit) hitPokes.push(hitPoint.component);
         });
         return hitPokes;
     }
@@ -105,9 +105,9 @@ class DropBaseUtil {
     * 获取碰撞检测对应的扑克牌对象，如果同时碰撞多个，则返回碰撞面积大的碰撞点
     * @param poke 当前操作的扑克
     */
-    public static getCollisionCheck(poke: Poke): Poke {
+    public static getCollisionCheck(poke: Poke): Box {
         // 获取全部碰撞扑克牌
-        const collision: Poke[] = DropBaseUtil.getCollisionChecks(poke);
+        const collision: Box[] = DropBaseUtil.getCollisionChecks(poke);
         // TODO 是否需要做判断操作 还是只是获取第一个
         if (collision.length === 1) {
             return collision[0];

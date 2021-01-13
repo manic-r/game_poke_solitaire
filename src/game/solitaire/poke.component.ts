@@ -1,3 +1,6 @@
+/**
+ * 扑克牌类
+ */
 class Poke extends DropBase {
     // 图片原图 width: height = 7: 10
     // width: 105
@@ -18,7 +21,7 @@ class Poke extends DropBase {
         // 构造属性
         this.initConfig();
         // 获取扩展配置
-        const otherConfig = this.config.off || { fixed: { is: null, type: null, storey: null } };
+        const otherConfig = this.config.off || { fixed: { is: null, type: null, storey: null, name: null } };
         // 创建图片
         this.createImage(otherConfig.imageConfig);
     }
@@ -66,7 +69,7 @@ class Poke extends DropBase {
             return false;
         }
         // 获取碰撞点
-        const hitPokes: Poke = DropBaseUtil.getCollisionCheck(this);
+        const hitPokes: Box = DropBaseUtil.getCollisionCheck(this);
         // 如果未碰撞或者碰撞逻辑不满足时（交叉减小）返回
         if (!hitPokes /* || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes) */) {
             return false;
@@ -80,7 +83,7 @@ class Poke extends DropBase {
         // 将当前末尾元素设置可拖拽和吸附
         // 如果是最后一个元素，获取当前列的位置，获取对应的固定图像，设置为可吸附
         if (movePokeArray.length === 0) {
-            const fixed: Poke = PokeRuleUtil.Instance.CenterFixedBox[this.config.off.point.col];
+            const fixed: FixedBox = PokeRuleUtil.Instance.CenterFixedBox[this.config.off.point.col];
             fixed.config.off.openAdsorb = true;
         } else {
             const tailPoke: Poke = this.root.getChildByName(movePokeArray[movePokeArray.length - 1].name) as Poke;
@@ -97,12 +100,12 @@ class Poke extends DropBase {
         const addPokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[hitPokes.config.off.point.col];
         // 如果`addPokeArray`为空，则表示中心吸附控件抛露，此时设置吸附控件为不可以吸附
         if (addPokeArray.length === 0) {
-            const fixed: Poke = PokeRuleUtil.Instance.CenterFixedBox[hitPokes.config.off.point.col];
+            const fixed: FixedBox = PokeRuleUtil.Instance.CenterFixedBox[hitPokes.config.off.point.col];
             fixed.config.off.openAdsorb = false;
         }
         // 修改元素坐标
         this.config.off.point.col = hitPokes.config.off.point.col;
-        this.config.off.point.row = addPokeArray.length;// lastPoke.config.off.fixed.is ? 0 : // lastPoke.config.off.point.row/*  + 1 */;
+        this.config.off.point.row = addPokeArray.length;
         addPokeArray.push(this);
 
         // 计算位置

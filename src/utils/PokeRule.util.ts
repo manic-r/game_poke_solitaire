@@ -30,9 +30,9 @@ class PokeRuleUtil {
     // 聚合队列
     public GearsBox: Poke[] = [];
     // 顶部固定队列
-    public TopFixedBox: Poke[] = [];
+    public TopFixedBox: FixedBox[] = [];
     // 中间固定队列
-    public CenterFixedBox: Poke[] = [];
+    public CenterFixedBox: FixedBox[] = [];
 
     // 由于顶部和中心部分固定，此处存储顶部和中心部分的碰撞点列
     private static _top_center_hit_point: PokePositions;
@@ -46,7 +46,7 @@ class PokeRuleUtil {
             || PokeRuleUtil._top_center_hit_point.length === 0)) {
             PokeRuleUtil._top_center_hit_point = [];
             // 合并顶部队列、中间部分队列
-            const list: Poke[] = [...(this.TopFixedBox || []), ...(this.CenterFixedBox || [])];
+            const list: FixedBox[] = [...(this.TopFixedBox || []), ...(this.CenterFixedBox || [])];
             list.filter(poke => poke.config.off.openAdsorb)
                 .forEach(poke =>
                     // 获取四个点坐标
@@ -126,21 +126,5 @@ class PokeRuleUtil {
         const hitFigure: number = Number(hitPoke.config.off.poke.figure);
         if ((localFigure + 1) !== hitFigure) return false;
         return true;
-    }
-
-    /**
-     * 计算扑克牌自动归位
-     */
-    public handlePokeAccordMove() {
-        // 1. 判断每一组最后一张是否是`A`
-        PokeRuleUtil.Instance.pokeQueue
-            .forEach(array => {
-                // 获取最后一张牌
-                const lastPoke: Poke = array.pop();
-                // 如果为空，则不做处理。不为空 进入逻辑
-                if (lastPoke) {
-
-                }
-            })
     }
 }

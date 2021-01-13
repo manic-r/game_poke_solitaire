@@ -2,7 +2,7 @@
  * 点位坐标
  */
 interface PokePosition {
-    poke: Poke;
+    component: Poke | FixedBox;
     topLeft: egret.Point;
     topRight: egret.Point;
     bottomRight: egret.Point;

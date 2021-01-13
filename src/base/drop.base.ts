@@ -31,7 +31,7 @@ abstract class DropBase extends SceneBase {
      * @param register 是否注册拖拽 true: 注册, false: 不注册（默认注册）
      */
     constructor(group_code: string, register: boolean = true) {
-        super();
+        super(true);
         this._GROUP_CODE = group_code;
         this._REGISTER = register;
     }
