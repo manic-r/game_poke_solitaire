@@ -29,7 +29,18 @@ class FixedBox extends SceneBase {
         }
     }
 
-    public addBoxChild<T>(component: T) {
+    /**
+     * @param component 扑克牌对象
+     */
+    public addBoxChild(component: Poke) {
+        this.child.push(component);
+        // 放入后 创建新的扑克牌对象 ？？ TODO 考虑
+    }
 
+    /**
+     * 获取已放置的扑克牌
+     */
+    public get poke(): Poke {
+        return this.child.length === 0 ? null : this.child[this.child.length - 1];
     }
 }
