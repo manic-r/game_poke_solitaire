@@ -17,7 +17,8 @@ class PokeRandomUtil {
      */
     public static creator(input: FixedBox[]): Poke[][] {
         // 声明扑克牌生成池对象
-        const creator: PokeRandomCreator = new PokeRandomCreator();
+        // const creator: PokeRandomCreator = new PokeRandomCreator();
+        const creator: PokeRandomCreator = new PokeRandomCreator().order();
         const length: number = input.length;
         // 返回的数据体
         const result: Poke[][] = [];
@@ -58,10 +59,20 @@ class PokeRandomUtil {
             if (result[index].length > 0) {
                 // 获取序列中最后一个对象
                 const pk: Poke = result[index][result[index].length - 1];
-                // TODO 暂时屏蔽，为了处理批量拖拽
-                // pk.config.off.openAdsorb = false;
-                // pk.config.off.openDrop = false;
-
+                // 可吸附关闭
+                pk.config.off.openAdsorb = false;
+                /**
+                 * 可拖拽, 需要根据需求设置
+                 * 1. 判断是否与上一个扑克满足【游戏规则】，如果满足设置上一个为可拖拽
+                 * 2. 如果不满足【游戏规则】，则判断当前列，将（除当前以外）所有的扑克牌全部设置为不可拖拽
+                 */
+                console.log('PokeRuleUtil.Instance.checkPokeSiteColor(poke, pk)', PokeRuleUtil.Instance.checkPokeSiteColor(poke, pk))
+                if (PokeRuleUtil.Instance.checkPokeSiteColor(poke, pk)) {
+                    pk.config.off.openDrop = true;
+                } else {
+                    // 获取当前扑克牌所在的列对象，并设置不可拖拽
+                    result[index].forEach(row => row.config.off.openDrop = false);
+                }
             }
             result[index].push(poke);
         }

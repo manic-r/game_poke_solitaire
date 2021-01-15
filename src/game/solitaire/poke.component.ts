@@ -74,8 +74,15 @@ class Poke extends DropBase {
         if (!hitPokes /* || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes) */) {
             return false;
         }
+        ConsoleUtil.debugCode_GetPokeInfo(hitPokes as Poke);
+        // 碰撞逻辑 =================================================
+        // 获取扑克牌坐标[拖拽之前]
+        const pokePoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(this);
+        console.log(pokePoint);
+        // 
+
+
         return;
-        // 碰撞逻辑
         // 修改坐标信息数据
         // 修改移除元素的数据信息（被拽走的所在列）
         const movePokeArray: Poke[] = PokeRuleUtil.Instance.pokeQueue[this.config.off.point.col];

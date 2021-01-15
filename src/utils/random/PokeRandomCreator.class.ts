@@ -48,4 +48,27 @@ class PokeRandomCreator {
             figure
         };
     }
+
+    /**
+     * 扑克牌倒序
+     */
+    public order(): PokeRandomCreator {
+        console.log([['a', 'b'], ['c', 'd']].pop())
+        this.poolArray.reverse();
+        console.log(this.poolArray)
+        const pokeName: string[][] = [];
+        this.poolArray.forEach((row) => {
+            const sp: number = pokeName.length <= 4 ? 7 : 6;
+            const rowName: string[] = pokeName.pop() || [];
+            console.log(sp, pokeName, rowName)
+            if (rowName.length < sp) {
+                rowName.push(row);
+                pokeName.push(rowName);
+            } else {
+                pokeName.push([row]);
+            }
+        })
+        console.log(pokeName)
+        return this;
+    }
 }

@@ -23,6 +23,7 @@
 		"bin-debug/game/interfaces/image.config.js",
 		"bin-debug/game/interfaces/mask.type.js",
 		"bin-debug/game/interfaces/poke.info.creator.js",
+		"bin-debug/game/interfaces/poke.point.js",
 		"bin-debug/game/interfaces/poke.position.js",
 		"bin-debug/LoadingUI.js",
 		"bin-debug/game/interfaces/type.interface.js",
