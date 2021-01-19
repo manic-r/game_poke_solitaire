@@ -50,25 +50,51 @@ class PokeRandomCreator {
     }
 
     /**
-     * 扑克牌倒序
+     * 扑克牌正常序列
      */
     public order(): PokeRandomCreator {
-        console.log([['a', 'b'], ['c', 'd']].pop())
         this.poolArray.reverse();
-        console.log(this.poolArray)
         const pokeName: string[][] = [];
         this.poolArray.forEach((row) => {
             const sp: number = pokeName.length <= 4 ? 7 : 6;
             const rowName: string[] = pokeName.pop() || [];
-            console.log(sp, pokeName, rowName)
+            pokeName.push(rowName);
             if (rowName.length < sp) {
                 rowName.push(row);
-                pokeName.push(rowName);
             } else {
                 pokeName.push([row]);
             }
         })
-        console.log(pokeName)
+        this.poolArray = [];
+        for (let i = 0; i < pokeName.length; i++) {
+            pokeName.forEach(row => {
+                if (row[i]) {
+                    let name: string = row[i];
+                    // if (i % 2 == 0) {
+                    //     name = name.replace(/a/g, 'b');
+                    //     name = name.replace(/b/g, 'c');
+                    //     name = name.replace(/c/g, 'd');
+                    //     name = name.replace(/d/g, 'a');
+                    // }
+                    this.poolArray.push(name);
+                }
+            });
+        }
+        console.log(this.poolArray)
         return this;
+    }
+
+    /**
+     * 顺序获取扑克牌
+     */
+    public get orderPoke(): PokeInfoCreator {
+        const pokeName: string = this.poolArray[0];
+        this.poolArray.splice(0, 1);
+        const { type, figure } = PokeRandomCreator.analysisPokeName(pokeName);
+        return {
+            name: pokeName,
+            type,
+            figure
+        };
     }
 }

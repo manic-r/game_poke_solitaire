@@ -17,6 +17,7 @@ class PokeRandomUtil {
      */
     public static creator(input: FixedBox[]): Poke[][] {
         // 声明扑克牌生成池对象
+        // TODO
         // const creator: PokeRandomCreator = new PokeRandomCreator();
         const creator: PokeRandomCreator = new PokeRandomCreator().order();
         const length: number = input.length;
@@ -33,7 +34,9 @@ class PokeRandomUtil {
             // 也可以直接使用 row = result[index].length;
             const row: number = Math.floor(i / length);
             // 获取随机扑克牌对象
-            const pokeInfoCreator: PokeInfoCreator = creator.poke;
+            // TODO
+            // const pokeInfoCreator: PokeInfoCreator = creator.poke;
+            const pokeInfoCreator: PokeInfoCreator = creator.orderPoke;
             const poke = new Poke({
                 x: input[index].x,
                 y: input[index].y + row * this.MARGIN_TOP,

@@ -153,4 +153,17 @@ class PokeRuleUtil {
         const rowQueue: Poke[] = this.pokeQueue[point.col];
         return rowQueue.slice(point.row);
     }
+
+    /**
+     * 处理历史所在位置时列数据对象
+     */
+    public historyQueueHandle(poke: Poke) {
+        // 获取扑克牌坐标[拖拽之前]
+        const pokePoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(poke);
+        console.log(pokePoint);
+        // 获取所在列扑克牌信息
+        const pokeQueue: Poke[] = this.pokeQueue[pokePoint.col];
+        // 判断：扑克牌下标和数组长度，判断是否是最后一张
+        pokeQueue.slice
+    }
 }

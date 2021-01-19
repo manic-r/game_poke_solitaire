@@ -76,10 +76,7 @@ class Poke extends DropBase {
         }
         ConsoleUtil.debugCode_GetPokeInfo(hitPokes as Poke);
         // 碰撞逻辑 =================================================
-        // 获取扑克牌坐标[拖拽之前]
-        const pokePoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(this);
-        console.log(pokePoint);
-        // 
+        // 处理当前所在列数据
 
 
         return;
