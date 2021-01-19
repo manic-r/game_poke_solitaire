@@ -164,6 +164,6 @@ class PokeRuleUtil {
         // 获取所在列扑克牌信息
         const pokeQueue: Poke[] = this.pokeQueue[pokePoint.col];
         // 判断：扑克牌下标和数组长度，判断是否是最后一张
-        pokeQueue.slice
+        const isLast: boolean = pokeQueue.length > (pokePoint.row + 1) ? false : true;
     }
 }
