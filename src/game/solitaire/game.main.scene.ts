@@ -6,9 +6,12 @@ class GameMainScene extends SceneBase {
     }
 
     protected onComplete() {
-        PokeRuleUtil.Instance.TopFixedBox = PokeRandomUtil.createTopFixedBox();
-        PokeRuleUtil.Instance.GearsBox = PokeRandomUtil.createGearsBox();
-        PokeRuleUtil.Instance.CenterFixedBox = PokeRandomUtil.createCenterFixedBox();
-        PokeRuleUtil.Instance.pokeQueue = PokeRandomUtil.creator(PokeRuleUtil.Instance.CenterFixedBox);
+        new PokeInitUtil();
+        // PokeRuleUtil.Instance.TopFixedBox = PokeInitUtil.createTopFixedBox();
+        // PokeRuleUtil.Instance.GearsBox = PokeInitUtil.createGearsBox();
+        // PokeRuleUtil.Instance.CenterFixedBox = PokeInitUtil.createCenterFixedBox();
+        // PokeRuleUtil.Instance.pokeQueue = PokeInitUtil.creator(PokeRuleUtil.Instance.CenterFixedBox);
+        console.log(PokeInitUtil.pokeQueueCreator())
+        // console.log(PokeRuleUtil.Instance.pokeQueue)
     }
 }

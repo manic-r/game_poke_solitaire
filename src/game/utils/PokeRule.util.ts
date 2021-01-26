@@ -1,16 +1,5 @@
 class PokeRuleUtil {
 
-    // 顶部间距
-    public static readonly MARGIN_TOP: number = 20;
-    // 纸牌设置的宽度（与exml组件同步）
-    public static readonly POKE_WIDTH: number = 60;
-    // 纸牌设置的高度（与exml组件同步）
-    public static readonly POKE_HEIGHT: number = 86;
-    // 列个数
-    public static readonly COL_NUM: number = 8;
-    // 缝隙宽度
-    protected _space: number = 0;
-
     private static _manager: PokeRuleUtil;
 
     constructor() { }
@@ -18,9 +7,6 @@ class PokeRuleUtil {
     public static get Instance() {
         if (PokeRuleUtil._manager == null) {
             PokeRuleUtil._manager = new PokeRuleUtil();
-            const stage: egret.Stage = SceneManagerUtil.Instance.rootLayer.stage;
-            // 计算空隙大小（必要）
-            PokeRuleUtil._manager._space = (stage.stageWidth - PokeRuleUtil.COL_NUM * PokeRuleUtil.POKE_WIDTH) / (PokeRuleUtil.COL_NUM + 1);
         }
         return PokeRuleUtil._manager;
     }
@@ -50,7 +36,7 @@ class PokeRuleUtil {
             list.filter(poke => poke.config.off.openAdsorb)
                 .forEach(poke =>
                     // 获取四个点坐标
-                    PokeRuleUtil._top_center_hit_point.push(PokeRandomUtil.computeCapePoint(poke))
+                    PokeRuleUtil._top_center_hit_point.push(PokeInitUtil.computeCapePoint(poke))
                 )
         }
         return PokeRuleUtil._top_center_hit_point;
@@ -65,19 +51,8 @@ class PokeRuleUtil {
             rowArray.length > 0
             && rowArray[rowArray.length - 1].config.off.openAdsorb
         ).map(rowArray =>
-            PokeRandomUtil.computeCapePoint(rowArray[rowArray.length - 1])
+            PokeInitUtil.computeCapePoint(rowArray[rowArray.length - 1])
         )
-    }
-
-    /**
-     * 获取缝隙宽度
-     *
-     * @readonly
-     * @type {number}
-     * @memberof PokeRuleUtil
-     */
-    public get space(): number {
-        return this._space;
     }
 
     /**

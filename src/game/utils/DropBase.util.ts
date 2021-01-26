@@ -42,7 +42,7 @@ class DropBaseUtil {
         const touchSelected: TouchSelected = SceneManagerUtil.Instance.rootLayer.stage[name] as TouchSelected;
         if (!touchSelected || !touchSelected.componentName) return;
         // 根据名称获取组件对象
-        const poke: Poke = SceneManagerUtil.Instance.rootLayer.getChildByName(touchSelected.componentName) as Poke;
+        const poke: Poke = SceneUtil.getComponentByName(touchSelected.componentName);
         return poke;
     }
 

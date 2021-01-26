@@ -2,7 +2,8 @@ class SceneManagerUtil {
 
     private static _manager: SceneManagerUtil;
 
-    constructor() { }
+    constructor() {
+    }
 
     public static get Instance() {
         if (SceneManagerUtil._manager == null) {
@@ -19,6 +20,8 @@ class SceneManagerUtil {
     private currentScene: SceneBase;
     // 弹出场景层
     private pop_scene: SceneBase;
+    // 系统配置
+    public config: Config;
     // 切换场景
     public changeScene(s: SceneBase) {
         if (this.currentScene) {

@@ -114,7 +114,7 @@ class Poke extends DropBase {
         addPokeArray.push(this);
 
         // 计算位置
-        const point: egret.Point = PokeRandomUtil.computeNextPokePoint(hitPokes);
+        const point: egret.Point = PokeInitUtil.computeNextPokePoint(hitPokes);
         // 移动扑克牌
         DropBaseUtil.moveTween(this, { x: point.x, y: point.y });
         return true;

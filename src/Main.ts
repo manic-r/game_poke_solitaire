@@ -100,6 +100,8 @@ class Main extends eui.UILayer {
         SceneManagerUtil.Instance.rootLayer = this;
         // const startScene: StartScene = new StartScene();
         // SceneManagerUtil.Instance.changeScene(startScene);
+        // TODO Config类需要换确切位置初始化
+        SceneManagerUtil.Instance.config = new Config();
         const gameScene: GameMainScene = new GameMainScene();
         SceneManagerUtil.Instance.gameLayer = gameScene;
         SceneManagerUtil.Instance.changeScene(gameScene);
