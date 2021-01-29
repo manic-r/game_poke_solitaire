@@ -141,4 +141,18 @@ class PokeRuleUtil {
         // 判断：扑克牌下标和数组长度，判断是否是最后一张
         const isLast: boolean = pokeQueue.length > (pokePoint.row + 1) ? false : true;
     }
+
+    /**
+     * 根据坐标获取对应的坐标点信息
+     * @param col 所在列第几个位置(从0开始)
+     * @param row 所在行第几个位置(从0开始)
+     */
+    public getPointByIndex(col: number, row: number): Point {
+        const layout: Point[] = SceneManagerUtil.Instance.config.layout.temporary.in;
+        const marge: number = SceneManagerUtil.Instance.config.MARGIN_TOP;
+        return {
+            x: layout[col].x,
+            y: row * marge + layout[col].y
+        }
+    }
 }

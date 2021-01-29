@@ -2,8 +2,8 @@ class PokeRandomCreator {
 
     private poolArray: string[] = [];
 
-    constructor() {
-        SceneManagerUtil.Instance.config.POKE_TYPE.forEach(type => {
+    constructor(type: string[] = []) {
+        type.forEach(type => {
             for (let i = 1; i < 14; i++) {
                 this.poolArray.push(PokeRandomCreator.getPokeName({ type, figure: i }));
             }

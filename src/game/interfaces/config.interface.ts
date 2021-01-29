@@ -12,12 +12,12 @@ interface ConfigInterface {
     POKE_WIDTH: number;
     // 纸牌设置的高度（与exml组件同步）
     POKE_HEIGHT: number;
-    // 列个数
-    COL_NUM: number;
     // 缝隙宽度
     space: number;
     // 布局锚点
     layout: Layout;
+    // 游戏数据
+    gameData: StoreSave;
 }
 
 interface Layout {

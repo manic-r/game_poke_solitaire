@@ -28,10 +28,11 @@ class DropBaseUtil {
 
     /**
      * 移动动画
+     * @param func 回调函数, 默认重置锁定
      */
-    public static moveTween(target: any, { x, y }) {
+    public static moveTween(target: any, { x, y }, func: Function = () => DropBaseUtil.unClock()) {
         egret.Tween.get(target).to({ x, y }, 300, egret.Ease.sineIn)
-            .call(() => DropBaseUtil.unClock());
+            .call(func);
     }
 
     /**

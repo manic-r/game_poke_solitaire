@@ -1,14 +1,23 @@
 class Config implements ConfigInterface {
+    // 纸牌设置的高度（与exml组件同步）
     POKE_HEIGHT: number = 86;
+    // 纸牌设置的宽度（与exml组件同步）
     POKE_WIDTH: number = 60;
+    // 扑克牌类型 [a, b, c, d]
     POKE_TYPE: string[] = ['a', 'b', 'c', 'd'];
+    // URL常量地址
     POKE_PATH_PREFIX: string = `resource/assets/Poke/pk_`;
     POKE_PATH_SUFFIX: string = `.jpg`;
+    // 每类牌数最大数
     MAX_TYPE_NUM: number = 13;
+    // 每张牌上下间距
     MARGIN_TOP: number = 30;
-    COL_NUM: number = 8;
+    // 缝隙宽度
     space: number = 0;
+    // 布局锚点
     layout: Layout;
+    // 游戏数据
+    gameData: StoreSave;
 
     constructor() {
         // 计算空隙大小（必要）
@@ -23,6 +32,8 @@ class Config implements ConfigInterface {
             }
         }
         // 初始化布局对象 ===
+        // 获取扑克牌对象
+        this.initGameData();
     }
 
     private createGearsPoint(): Point[] {
@@ -58,5 +69,66 @@ class Config implements ConfigInterface {
             })
         }
         return result;
+    }
+
+    /**
+     * localStorage中获取游戏数据
+     */
+    private getGameInfoByLocalStorage(): StoreSave {
+        function getInfoInStorage<T>(key: string): T {
+            let str: string = egret.localStorage.getItem(key) || '[]';
+            str = str === 'null' || str === 'undefined' ? '[]' : str;
+            return JSON.parse(str) || [];
+        }
+        return {
+            pokeQueue: getInfoInStorage('pokeQueue'),
+            gearsQueue: getInfoInStorage('gearsQueue'),
+            topBoxQueue: getInfoInStorage('topBoxQueue')
+        };
+    }
+
+    /**
+     * 新建游戏数据
+     */
+    private getGameInfoByCreator(): StoreSave {
+        // 创建：pokeQueue
+        function creator(aClass: Config): string[][] {
+            const result: string[][] = [];
+            const creator: PokeRandomCreator = new PokeRandomCreator(aClass.POKE_TYPE);
+            // 每行个数
+            const length: number = aClass.layout.temporary.in.length;
+            for (let i = 0;
+                i < aClass.MAX_TYPE_NUM * aClass.POKE_TYPE.length;
+                i++) {
+                // i % length 结果是下标，可以直接获取`input`的值
+                const index: number = i % length;
+                // 获取每一列的列表
+                result[index] = result[index] || [];
+                // 获取随机扑克牌对象
+                result[index].push(creator.poke.name);
+            }
+            return result;
+        }
+
+        return {
+            pokeQueue: creator(this),
+            gearsQueue: [],
+            topBoxQueue: []
+        };
+    }
+
+    /**
+     * 创建游戏数据
+     */
+    private initGameData() {
+        /**
+         * 获取游戏状态
+         * @returns 已结束返回: false, 未结束返回: true
+         */
+        function gameEndState() {
+            const state: string | boolean = egret.localStorage.getItem(this.GAME_END_STATE_KEY) || '0';
+            return state === '1';
+        }
+        this.gameData = gameEndState() ? this.getGameInfoByLocalStorage() : this.getGameInfoByCreator();
     }
 }

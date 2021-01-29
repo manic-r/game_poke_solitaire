@@ -80,63 +80,31 @@ class PokeInitUtil {
     /**
      * 创建扑克牌配置信息
      */
-    public static pokeQueueCreator(): WidgetConfig[][] {
-        // 返回的数据体
-        const result: WidgetConfig[][] = [];
-        for (let i = 0;
-            i < this.instance.config.MAX_TYPE_NUM * this.instance.config.POKE_TYPE.length;
-            i++) {
-            // i % length 结果是下标，可以直接获取`input`的值
-            const index: number = i % length;
-            // 获取每一列的列表
-            result[index] = result[index] || [];
-            // [注：得到的是每一个分组后对应组的数据个数下标， 同：result[index].length]
-            // 也可以直接使用 row = result[index].length;
-            const row: number = Math.floor(i / length);
-            // 获取随机扑克牌对象
-            const pokeInfoCreator: PokeInfoCreator = this.instance.pokeRandomCreator.poke;
-            const config: WidgetConfig = {
-                x: this.instance.config.space + index * (this.instance.config.space + this.instance.config.POKE_WIDTH),
-                y: (this.instance.config.MARGIN_TOP * 2 + this.instance.config.POKE_HEIGHT) + row * this.instance.config.MARGIN_TOP,
-                skinName: 'resource/eui_skins/games/PokeComponentSkin.exml',
-                off: {
-                    // 默认打开扑克牌的拖拽功能
-                    openDrop: true,
-                    // 默认开启可吸附
-                    openAdsorb: true,
-                    imageConfig: { source: `resource/assets/Poke/${pokeInfoCreator.name}.jpg` },
-                    poke: {
-                        type: pokeInfoCreator.type,
-                        figure: pokeInfoCreator.figure,
-                        name: pokeInfoCreator.name
-                    },
-                    point: { col: index, row },
-                    fixed: { is: false, type: null, storey: 'pokeQueue', name: null }
-                }
-            }
-            // 在每一次像已存在数组中添加新的`poke`对象时，将上一个`poke`的拖拽设置为关闭，同时吸附设置为关闭
-            // 生成数据结构为每一组集合中的最后一个为可拖拽和可吸附模式
-            // 后续在每次拖走一个时，将当前变更集合中最后一个设置为启动
-            if (result[index].length > 0) {
-                // 获取序列中最后一个对象
-                const lastPoke: Poke = SceneUtil.getComponentByName(result[index].last());
-                // // 可吸附关闭
-                // lastPoke.config.off.openAdsorb = false;
-                // /**
-                //  * 可拖拽, 需要根据需求设置
-                //  * 1. 判断是否与上一个扑克满足【游戏规则】，如果满足设置上一个为可拖拽
-                //  * 2. 如果不满足【游戏规则】，则判断当前列，将（除当前以外）所有的扑克牌全部设置为不可拖拽
-                //  */
-                // if (PokeRuleUtil.Instance.checkPokeSiteColor(poke, lastPoke)) {
-                //     lastPoke.config.off.openDrop = true;
-                // } else {
-                //     // 获取当前扑克牌所在的列对象，并设置不可拖拽
-                //     result[index].forEach(row => row.config.off.openDrop = false);
-                // }
-            }
-            result[index].push(config);
-        }
-        return result;
+    public static pokeQueueCreator(): string[][] {
+        const { pokeQueue } = this.instance.config.gameData;
+        const localArray: Point[] = this.instance.config.layout.temporary.in;
+        pokeQueue.forEach((queue, col) => {
+            queue.forEach((name, row) => {
+                const { x, y } = PokeRuleUtil.Instance.getPointByIndex(col, row);
+                const { type, figure } = PokeRandomCreator.analysisPokeName(name);
+                const config: WidgetConfig = {
+                    x: 0, y: 0,
+                    skinName: 'resource/eui_skins/games/PokeComponentSkin.exml',
+                    off: {
+                        // 默认打开扑克牌的拖拽功能
+                        openDrop: true,
+                        // 默认开启可吸附
+                        openAdsorb: true,
+                        imageConfig: { source: `resource/assets/Poke/${name}.jpg` },
+                        poke: { type, figure, name },
+                        fixed: { is: false, type: null, storey: 'pokeQueue', name: null }
+                    }
+                };
+                const poke: Poke = new Poke(config);
+                DropBaseUtil.moveTween(poke, { x, y });
+            })
+        })
+        return pokeQueue;
     }
 
     /**
