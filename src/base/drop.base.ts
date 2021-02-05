@@ -58,13 +58,13 @@ abstract class DropBase extends SceneBase {
     }
 
     private onTouchBegin({ stageX, stageY }: egret.TouchEvent) {
-        if (!this.beforeTouchBeginHandle()) return;
+        console.log('--------------onTouchBegin', this.Child.name)
+        if (!this.beforeTouchBeginHandle(this.Child.name)) return;
         // 记录当前拖拽的唯一值
-        DropBaseUtil.recordDropPoke(this._GROUP_CODE, this.Config.off.poke.name);
+        DropBaseUtil.recordDropPoke(this._GROUP_CODE, this.Child.name);
         // 获取其下所有扑克
-        this.pokeNextPokes = PokeRuleUtil.Instance.getPokeNextPokes(this.Child);
+        this.pokeNextPokes = PokeRuleUtil.Instance.getPokeNextPokes(this.Child.name);
         this.pokeNextPokes
-            .filter(row => row.config.off.openDrop)
             .forEach(poke => {
                 poke.XTouch = stageX;
                 poke.YTouch = stageY;
@@ -79,16 +79,16 @@ abstract class DropBase extends SceneBase {
 
     /**
      * 设备点击事件执行前的处理
+     * @param name 当前控件名称
      * @returns true: 继续执行 false: 直接停止
      */
-    protected abstract beforeTouchBeginHandle(): boolean;
+    protected abstract beforeTouchBeginHandle(name: string): boolean;
 
     private onTouchMove({ stageX, stageY }: egret.TouchEvent) {
-        if (!this.beforeTouchMoveHandle()) return;
+        if (!this.beforeTouchMoveHandle(this.Child.name)) return;
         // 开启移动锁定
         DropBaseUtil.clock();
         this.pokeNextPokes
-            .filter(row => row.config.off.openDrop)
             .forEach((poke, index) => {
                 setTimeout(() => {
                     // 根据定位点，移动的x像素大小
@@ -108,7 +108,7 @@ abstract class DropBase extends SceneBase {
      * 设备开始移动时方法执行前的处理
      * @returns true: 继续执行 false: 直接停止
      */
-    protected abstract beforeTouchMoveHandle(): boolean;
+    protected abstract beforeTouchMoveHandle(name: string): boolean;
 
     private onTouchEnd() {
         DropBaseUtil.onTouchEndHandle(this.beforeTouchEndHandle());

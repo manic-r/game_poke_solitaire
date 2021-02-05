@@ -9,7 +9,7 @@ class FixedBox extends SceneBase {
      * 放置在当前box上的扑克牌队列。
      * 如果是·MODE·类型放置多个，如果是·BOX·类型则只可放置一个
      */
-    private child: Poke[] = [];
+    private child: string;
 
     constructor(config: WidgetConfig = {}) {
         super();
@@ -18,6 +18,8 @@ class FixedBox extends SceneBase {
             this.name = config.off.fixed.name;
         }
         this.root.addChild(this);
+        // TODO 测试使用，console当前对象
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => console.log(this), this);
     }
 
     protected onComplete() {
@@ -30,17 +32,26 @@ class FixedBox extends SceneBase {
     }
 
     /**
+     * 添加一个扑克牌节点
      * @param component 扑克牌对象
      */
-    public addBoxChild(component: Poke) {
-        this.child.push(component);
-        // 放入后 创建新的扑克牌对象 ？？ TODO 考虑
+    public addBoxChild(name: string) {
+        this.child = name;
     }
 
     /**
-     * 获取已放置的扑克牌
+     * 移除全部扑克牌节点
+     * @param component 扑克牌对象
      */
-    public get poke(): Poke {
-        return this.child.length === 0 ? null : this.child[this.child.length - 1];
+    public removeBoxChild() {
+        this.child = undefined;
+    }
+
+    /**
+     * 判断是否是可吸附
+     * @returns true: 可吸附，false: 不可吸附
+     */
+    public canAdsorb(): boolean {
+        return !this.child;
     }
 }

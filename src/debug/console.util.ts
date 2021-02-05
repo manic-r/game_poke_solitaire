@@ -7,9 +7,8 @@ class ConsoleUtil {
         } = { a: '♥', b: '♠', c: '♦', d: '♣' };
         if (inputConsoleStr && inputConsoleStr.length > 0) console.log(inputConsoleStr);
         console.log('%c======================扑克牌详情 - start ==========================', 'color:#e1ddd8; font-size:12px;');
-        console.log(`%c扑克牌：${typeMap[input.config.off.poke.type]} ${input.config.off.poke.figure}, 第${input.config.off.point.col + 1}列, 第${input.config.off.point.row + 1}个`, 'color:#2cbdffb0; font-size:12px;');
+        console.log(`%c扑克牌：${typeMap[input.config.off.poke.type]} ${input.config.off.poke.figure}`, 'color:#2cbdffb0; font-size:12px;');
         console.log(`%c是否是固定框: ${input.config.off.fixed.is}, 固定盒子类型: ${input.config.off.fixed.type}`, 'color:#2cbdffb0; font-size:12px;');
-        console.log(`%c已${input.config.off.openDrop ? ' 开启 ' : ' 关闭 '}拖拽[openDrop], 已${input.config.off.openAdsorb ? ' 开启 ' : ' 关闭 '}吸附[openAdsorb]`, 'color:#2cbdffb0; font-size:12px;')
         console.log('%c======================扑克牌详情 - end  ==========================', 'color:#e1ddd8; font-size:12px;');
     }
 
@@ -43,5 +42,27 @@ class ConsoleUtil {
             }
         }
         return array;
+    }
+
+    public static componentByName(name: string) {
+        let type: string;
+        let location: PokePoint;
+        if (PokeRuleUtil.Instance.TopFixedBox.deepContains(name)
+            || PokeRuleUtil.Instance.CenterFixedBox.deepContains(name)
+            || PokeRuleUtil.Instance.GearsBox.deepContains(name)) {
+            type = 'FixedBox';
+        } else if (PokeRuleUtil.Instance.pokeQueue.deepContains(name)) {
+            type = 'Poke';
+        } else {
+            console.log(`%c名称为: ${name} 的控件未找到.`, 'color:#2cbdffb0; font-size:12px;');
+            return;
+        }
+        const component: Box = SceneUtil.getComponentByName(name);
+        console.log('%c======================详情 - start ==========================', 'color:#e1ddd8; font-size:12px;');
+        console.log(`%c对象类型：${type}`, 'color:#2cbdffb0; font-size:12px;');
+        console.log(`%c名称：${component.name}`, 'color:#2cbdffb0; font-size:12px;');
+        console.log(`%c是否是固定扑克牌：${component instanceof FixedBox ? '是' : '不是'}`, 'color:#2cbdffb0; font-size:12px;');
+        console.log(`%c所在位置：${component.name}`, 'color:#2cbdffb0; font-size:12px;');
+        console.log('%c======================详情 - end  ==========================', 'color:#e1ddd8; font-size:12px;');
     }
 }

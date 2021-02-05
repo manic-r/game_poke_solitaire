@@ -12,13 +12,14 @@ class PokeRuleUtil {
     }
 
     // 扑克牌队列
-    public pokeQueue: Poke[][] = [];
+    // public pokeQueue: Poke[][] = [];
+    public pokeQueue: string[][] = [];
     // 聚合队列
-    public GearsBox: Poke[] = [];
+    public GearsBox: string[] = [];
     // 顶部固定队列
-    public TopFixedBox: FixedBox[] = [];
+    public TopFixedBox: string[] = [];
     // 中间固定队列
-    public CenterFixedBox: FixedBox[] = [];
+    public CenterFixedBox: string[] = [];
 
     // 由于顶部和中心部分固定，此处存储顶部和中心部分的碰撞点列
     private static _top_center_hit_point: PokePositions;
@@ -32,11 +33,12 @@ class PokeRuleUtil {
             || PokeRuleUtil._top_center_hit_point.length === 0)) {
             PokeRuleUtil._top_center_hit_point = [];
             // 合并顶部队列、中间部分队列
-            const list: FixedBox[] = [...(this.TopFixedBox || []), ...(this.CenterFixedBox || [])];
-            list.filter(poke => poke.config.off.openAdsorb)
-                .forEach(poke =>
+            const names: string[] = [...(this.TopFixedBox || []), ...(this.CenterFixedBox || [])];
+            SceneUtil.getComponentByNames<FixedBox>(names)
+                .filter(fixed => fixed.canAdsorb())
+                .forEach(fixed =>
                     // 获取四个点坐标
-                    PokeRuleUtil._top_center_hit_point.push(PokeInitUtil.computeCapePoint(poke))
+                    PokeRuleUtil._top_center_hit_point.push(PokeInitUtil.computeCapePoint(fixed))
                 )
         }
         return PokeRuleUtil._top_center_hit_point;
@@ -49,9 +51,8 @@ class PokeRuleUtil {
         if (!this.pokeQueue) return [];
         return this.pokeQueue.filter(rowArray =>
             rowArray.length > 0
-            && rowArray[rowArray.length - 1].config.off.openAdsorb
         ).map(rowArray =>
-            PokeInitUtil.computeCapePoint(rowArray[rowArray.length - 1])
+            PokeInitUtil.computeCapePoint(SceneUtil.getComponentByName(rowArray.last()))
         )
     }
 
@@ -101,45 +102,34 @@ class PokeRuleUtil {
 
     /**
      * 获取扑克牌即时坐标
-     * @param poke 扑克牌对象
+     * @param name 扑克牌名称
      */
-    public getPokeImmediatelyPoint(poke: Poke): PokePoint {
-        for (let colIndex in this.pokeQueue) {
-            for (let rowIndex in this.pokeQueue[colIndex]) {
-                if (this.pokeQueue[colIndex][rowIndex] === poke) {
-                    return {
-                        col: Number(colIndex),
-                        row: Number(rowIndex)
-                    };
-                }
+    public getPokeImmediatelyPoint(name: string): PokePoint {
+        const component: Box = SceneUtil.getComponentByName(name);
+        let key: string = '';
+        if (component instanceof FixedBox) {
+            if (component.name.startsWith('')) {
+
             }
+            key = 'CenterFixedBox';
+        } else if (component instanceof Poke) {
+            key = 'pokeQueue';
         }
-        return null;
+        const [col, row] = this[key].location(name);
+        return { col, row: row || -1 };
     }
 
     /**
      * 获取指定扑克牌其下面的扑克
-     * @param poke 扑克牌对象
+     * @param name 扑克牌名称
      */
-    public getPokeNextPokes(poke: Poke): Poke[] {
+    public getPokeNextPokes(name: string): Poke[] {
         // 获取指定扑克牌所在的即时坐标
-        const point: PokePoint = this.getPokeImmediatelyPoint(poke);
+        const point: PokePoint = this.getPokeImmediatelyPoint(name);
         if (!point) return [];
-        const rowQueue: Poke[] = this.pokeQueue[point.col];
-        return rowQueue.slice(point.row);
-    }
-
-    /**
-     * 处理历史所在位置时列数据对象
-     */
-    public historyQueueHandle(poke: Poke) {
-        // 获取扑克牌坐标[拖拽之前]
-        const pokePoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(poke);
-        console.log(pokePoint);
-        // 获取所在列扑克牌信息
-        const pokeQueue: Poke[] = this.pokeQueue[pokePoint.col];
-        // 判断：扑克牌下标和数组长度，判断是否是最后一张
-        const isLast: boolean = pokeQueue.length > (pokePoint.row + 1) ? false : true;
+        const rowQueue: string[] = this.pokeQueue[point.col] || [];
+        const names: string[] = rowQueue.slice(point.row) || [];
+        return SceneUtil.getComponentByNames(names);
     }
 
     /**
@@ -154,5 +144,46 @@ class PokeRuleUtil {
             x: layout[col].x,
             y: row * marge + layout[col].y
         }
+    }
+
+    /**
+     * 判断选中扑克牌列是否满足可拖拽效果
+     * @param name 选中扑克牌名称
+     * @return true:可拖拽, false: 不可拖拽
+     */
+    public validSelectPokeCanDrop(name: string): boolean {
+        const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
+        // 获取扑克牌队列
+        const index: number[] = this.pokeQueue.location(name);
+        // 获取其下队列
+        const queue: string[] = this.pokeQueue[index[0]].slice(index[1]);
+        // 获取扑克牌队列
+        const pokes: Poke[] = SceneUtil.getComponentByNames(queue);
+        for (let i = 0; i < pokes.length - 1; i++) {
+            const value: Poke = pokes[i];
+            const next: Poke = pokes[i + 1];
+            /**
+             * 实际判断逻辑：颜色交叉递减！
+             */
+            // 判断花色
+            // 花色规则：对应Map 【a: '♥（红桃）', b: '♠（黑桃）', c: '♦（方块）', d: '♣（梅花）'】
+            // a -> b | d; b -> a | c; c -> b | d; d -> a | c;
+            // 处理花色
+            const localColor: POKE_COLOR = roleMap[value.config.off.poke.type];
+            const nextColor: POKE_COLOR = roleMap[next.config.off.poke.type];
+            if (localColor === nextColor) return false;
+            // 处理文字序号
+            const localFigure: number = Number(value.config.off.poke.figure);
+            const nextFigure: number = Number(next.config.off.poke.figure);
+            if ((localFigure - 1) !== nextFigure) return false;
+        }
+        return true;
+    }
+
+    /**
+     * 处理扑克牌合并
+     */
+    public handleMarge() {
+
     }
 }

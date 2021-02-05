@@ -71,7 +71,12 @@ class DropBaseUtil {
         const poke: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
         if (!poke) return;
         // ================================================
-        PokeRuleUtil.Instance.getPokeNextPokes(poke).forEach(row => {
+        // 获取所有拖拽的扑克
+        const index = PokeRuleUtil.Instance.pokeQueue.location(poke.name);
+        const pokeNames: string[] = PokeRuleUtil.Instance.pokeQueue[index[0]].slice(index[1]);
+        console.log(`____________End 移动处理, ${poke.name} 下面全部被移动的扑克`, pokeNames)
+        /* PokeRuleUtil.Instance.getPokeNextPokes(poke.name) */
+        SceneUtil.getComponentByNames<Poke>(pokeNames).forEach(row => {
             // 移除遮罩
             DropBaseUtil.removeMask(row, DropBase.MASK_OF_POKE);
             // 重置扑克牌记录
@@ -83,6 +88,7 @@ class DropBaseUtil {
                 DropBaseUtil.unClock();
             }
         })
+        console.log('结束时的处理')
     }
 
     /**
@@ -94,7 +100,10 @@ class DropBaseUtil {
         const hitPoints: PokePositions = PokeRuleUtil.Instance.getHitPoints(true);
         // 记录碰撞点对应的扑克牌对象
         const hitPokes: Box[] = [];
-        hitPoints.filter(hitPoint => hitPoint.component.name !== poke.name).forEach(hitPoint => {
+        // 获取当前扑克牌以及下方列表中全部扑克牌名称
+        const point: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(poke.name);
+        const select: string[] = PokeRuleUtil.Instance.pokeQueue[point.col];
+        hitPoints.filter(hitPoint => !select.deepContains(hitPoint.component.name)).forEach(hitPoint => {
             const isHit: boolean = poke.hitTestPoint(hitPoint.topLeft.x, hitPoint.topLeft.y)
                 || poke.hitTestPoint(hitPoint.topRight.x, hitPoint.topRight.y)
                 || poke.hitTestPoint(hitPoint.bottomLeft.x, hitPoint.bottomLeft.y)

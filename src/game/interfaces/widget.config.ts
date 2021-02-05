@@ -24,9 +24,9 @@ interface WidgetConfig {
         // 扑克牌 三属性
         poke?: PokeInfoCreator,
         // 是否开启拖拽，[false: 关闭拖拽，true: 启动拖拽]
-        openDrop?: boolean,
+        // openDrop?: boolean,
         // 是否开启吸附功能
-        openAdsorb?: boolean,
+        // openAdsorb?: boolean,
         // 扑克牌生成的布局结构中，当前扑克牌所对应的下标，从零开始
         point?: {
             // 第几列（对应结构中最外层）

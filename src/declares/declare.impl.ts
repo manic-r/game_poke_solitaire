@@ -4,6 +4,10 @@ Object.isArray = (value: any): boolean => {
     return Object.prototype.toString.call(value) === '[object Array]';
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+String.prototype.startsWith = function (target: string): boolean {
+    return this.indexOf(target) === 0;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
 // 获取元素最后一个值
 Array.prototype.last = function <T>(): T {
     if (!this) return null;
@@ -42,5 +46,36 @@ Array.prototype.location = function <T>(val: T): number[] {
 // 获取指定下标元素
 Array.prototype.get = function <T>(...point: number[]): T {
     return eval(`this[${point.join('][')}]`);
+}
+// 移除指定下标以及其后续所有元素
+Array.prototype.remove = function <T>(index: number): T[] {
+    return this.splice(index, this.length);
+}
+// 倒叙遍历数组
+Array.prototype.forAnti = function <T>(callbackfn: (value: T, lastValue: T, array: T[]) => any): void {
+    for (let i = this.length - 1; i >= 0; i--) {
+        if (i - 1 < 0) return;
+        const nowValue: T = this[i];
+        const lastValue: T = this[i - 1];
+        const callback: any = callbackfn(nowValue, lastValue, this);
+        if (Object.prototype.toString.call(callback) === '[object Boolean]'
+            && !callback
+        ) {
+            return;
+        }
+    }
+}
+// 倒叙遍历数组
+Array.prototype.forOrder = function <T>(callbackfn: (value: T, nextValue: T, array: T[]) => any): void {
+    for (let i = 0; i < this.length - 1; i++) {
+        const nowValue: T = this[i];
+        const nextValue: T = this[i + 1];
+        const callback: any = callbackfn(nowValue, nextValue, this);
+        if (Object.prototype.toString.call(callback) === '[object Boolean]'
+            && !callback
+        ) {
+            return;
+        }
+    }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////

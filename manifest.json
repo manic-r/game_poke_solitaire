@@ -41,7 +41,7 @@
 		"bin-debug/game/utils/PokeRandomCreator.js",
 		"bin-debug/game/utils/PokeRule.util.js",
 		"bin-debug/game/utils/ReadConfig.util.js",
-		"bin-debug/game/utils/scene.util.js",
+		"bin-debug/game/utils/Scene.util.js",
 		"bin-debug/game/utils/SceneManager.util.js"
 	]
 }
