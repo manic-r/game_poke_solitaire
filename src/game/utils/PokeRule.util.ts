@@ -192,10 +192,6 @@ class PokeRuleUtil {
         return true;
     }
 
-    public validAdsorbToTop() {
-
-    }
-
     /**
      * 处理扑克牌合并
      */
