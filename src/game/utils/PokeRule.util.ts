@@ -106,7 +106,11 @@ class PokeRuleUtil {
      */
     public getPokeImmediatelyPoint(name: string): PokePoint {
         const component: Box = SceneUtil.getComponentByName(name);
-        const [col, row] = this[component.config.off.fixed.storey].location(name);
+        let [col, row] = this[component.config.off.fixed.storey].location(name);
+        // 如果获取的结果为空，则表示未在对应的队列中，此时在Top中查找
+        if (!Object.isLegal(col) && !Object.isLegal(row)) {
+            [col, row] = this.TopFixedBox.location(name);
+        }
         return {
             col: Object.isLegal(col) ? col : -1,
             row: Object.isLegal(row) ? row : -1
@@ -166,7 +170,11 @@ class PokeRuleUtil {
         const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
         // 获取扑克牌队列
         const index: number[] = this.pokeQueue.location(name);
-        if (!Object.isLegal(index) || index.length === 0) return false;
+        // 判断对象是否是在pokeQueue队列中
+        if (!Object.isLegal(index) || index.length === 0) {
+            // 如果不在队列中，扑克牌在TopFixed中，必视为可拖拽
+            return true;
+        }
         // 获取其下队列
         const queue: string[] = this.pokeQueue[index[0]].slice(index[1]);
         // 获取扑克牌队列
