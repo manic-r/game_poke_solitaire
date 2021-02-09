@@ -65,4 +65,25 @@ class ConsoleUtil {
         console.log(`%c所在位置：${component.name}`, 'color:#2cbdffb0; font-size:12px;');
         console.log('%c======================详情 - end  ==========================', 'color:#e1ddd8; font-size:12px;');
     }
+
+    /**
+     * 分段显示数据
+     * @param start 前缀
+     * @param show 显示数据集合
+     */
+    public static clips(start: string, ...show: any[]) {
+        const font: string = 'font-size:12px;';
+        const descColor: string = 'color:#cac8c6;';
+        const contextColor: string = 'color:#2cbdffb0;';
+        const error: string = 'font-size:10px;color:red;';
+        const contextMargin: string = 'margin-left: 20px;';
+        console.log('\n')
+        console.log(`%cstart===============${start}===============start`, font + descColor);
+        if (show.length === 0) console.log(`%c无输入`, error + contextMargin);
+        show.forMoreEach((a, b) => {
+            console.log(`%c${a} => ${b}`, font + contextColor + contextMargin)
+        });
+        console.log(`%cend===============${start}===============end`, font + descColor);
+        console.log('\n')
+    }
 }
