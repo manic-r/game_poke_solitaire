@@ -58,7 +58,6 @@ abstract class DropBase extends SceneBase {
     }
 
     private onTouchBegin({ stageX, stageY }: egret.TouchEvent) {
-        console.log('--------------onTouchBegin', this.Child.name)
         if (!this.beforeTouchBeginHandle(this.Child.name)) return;
         // 记录当前拖拽的唯一值
         DropBaseUtil.recordDropPoke(this._GROUP_CODE, this.Child.name);

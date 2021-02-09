@@ -36,7 +36,7 @@ class PokeInitUtil {
      * 创建顶部固定盒子
      */
     public static createTopFixedBox(): string[] {
-        return this.instance.config.layout.temporary.out.map(({ x, y }, i) => {
+        return this.instance.config.layout.TopFixedBox.map(({ x, y }, i) => {
             // 前四个与后面的不同
             const config: WidgetConfig = {
                 x, y,
@@ -52,7 +52,7 @@ class PokeInitUtil {
      * 创建收纳盒
      */
     public static createGearsBox(): string[] {
-        return this.instance.config.layout.gears.map(({ x, y }, i) => {
+        return this.instance.config.layout.GearsBox.map(({ x, y }, i) => {
             // 前四个与后面的不同
             const config: WidgetConfig = {
                 x, y,
@@ -68,7 +68,7 @@ class PokeInitUtil {
      * 创建中心固定格子
      */
     public static createCenterFixedBox(): string[] {
-        return this.instance.config.layout.temporary.in.map(({ x, y }, i) => {
+        return this.instance.config.layout.CenterFixedBox.map(({ x, y }, i) => {
             const config: WidgetConfig = {
                 x, y,
                 off: {

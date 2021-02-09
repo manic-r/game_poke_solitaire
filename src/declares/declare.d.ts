@@ -1,6 +1,14 @@
 interface Object {
-    // 判断对象是否是数组
+    /**
+     * 判断对象是否是数组
+     * @param value 判断对象值
+     */
     isArray(value: any): boolean;
+    /**
+     * 判断对象是否合法
+     * value != null &7 value != undefined
+     */
+    isLegal(value: any): boolean;
 }
 
 interface String {
@@ -9,6 +17,12 @@ interface String {
      * @param target 目标字符串
      */
     startsWith(target: string): boolean;
+
+    /**
+     * 判断字符串是否按照指定字符串结束
+     * @param target 目标字符串
+     */
+    endsWith(target: string): boolean;
 }
 
 

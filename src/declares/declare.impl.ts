@@ -3,9 +3,15 @@
 Object.isArray = (value: any): boolean => {
     return Object.prototype.toString.call(value) === '[object Array]';
 }
+Object.isLegal = (value: any): boolean => {
+    return value != null && value != undefined;
+}
 //////////////////////////////////////////////////////////////////////////////////////////////
 String.prototype.startsWith = function (target: string): boolean {
     return this.indexOf(target) === 0;
+}
+String.prototype.endsWith = function (target: string): boolean {
+    return this.substring(this.lastIndexOf(target)) === target;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 获取元素最后一个值

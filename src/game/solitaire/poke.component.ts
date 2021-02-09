@@ -45,13 +45,13 @@ class Poke extends DropBase {
         if (!config) return;
         const image: eui.Image = new eui.Image();
         image.source = config.source;
-        // image.scale9Grid = new egret.Rectangle(10,10,80,80);
         image.width = this.width;
         image.height = this.height;
         this.addChild(image);
     }
 
     protected beforeTouchBeginHandle(name: string): boolean {
+        console.log('beforeTouchBeginHandle', DropBaseUtil.isClock())
         return !DropBaseUtil.isClock() && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
     }
 
@@ -75,7 +75,7 @@ class Poke extends DropBase {
         if (!hitPokes /* || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes) */) {
             return false;
         }
-        // 碰撞逻辑 =================================================
+        // 扑克牌碰撞逻辑 =================================================
         // 历史列处理
         // 获取扑克牌坐标[拖拽之前]
         const historyPokePoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(this.name);
@@ -90,27 +90,36 @@ class Poke extends DropBase {
         if (!historyQueue.last()) {
             // 获取对应的fixed盒子信息
             const name: string = PokeRuleUtil.Instance.CenterFixedBox.get(historyPokePoint.col);
-            SceneUtil.getComponentByName<FixedBox>(name).addBoxChild(this.name);
-        }
-        // 目标列处理
-        // 修改增加元素的数组信息
-        const orderPoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(hitPokes.name);
-        // 如果放置的是在fixed上，设置fixed属性
-        if (PokeRuleUtil.Instance.pokeQueue[orderPoint.col].length === 0) {
-            // 获取对应的fixed盒子信息
-            const name: string = PokeRuleUtil.Instance.CenterFixedBox.get(orderPoint.col);
             SceneUtil.getComponentByName<FixedBox>(name).removeBoxChild();
         }
-        PokeRuleUtil.Instance.pokeQueue[orderPoint.col].push(...moveQueue);
-        // 移动扑克牌计算动画 =========
-        moveQueue.forEach(pokeName => {
+        // 目标列处理
+        // 如果是头部的收集盒子
+        if (hitPokes.config.off.fixed.storey === 'TopFixedBox') {
+            const topBox: FixedBox = SceneUtil.getComponentByName(hitPokes.name);
+            topBox.addBoxChild(this.name);
             // 计算位置
-            const [col, row] = PokeRuleUtil.Instance.pokeQueue.location(pokeName);
-            const { x, y } = PokeRuleUtil.Instance.getPointByIndex(col, row);
-            console.log('目的坐标：', { x, y }, col, row)
+            const { x, y }: Point = PokeRuleUtil.Instance.reckonPointByNameOrComponent(hitPokes);
             // 移动扑克牌
-            DropBaseUtil.moveTween(SceneUtil.getComponentByName(pokeName), { x, y });
-        })
+            DropBaseUtil.moveTween(SceneUtil.getComponentByName(this.name), { x, y });
+        } else {
+            // 修改增加元素的数组信息
+            const orderPoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(hitPokes.name);
+            // 如果放置的是在fixed上，设置fixed属性
+            if (PokeRuleUtil.Instance.pokeQueue[orderPoint.col].length === 0) {
+                // 获取对应的fixed盒子信息
+                const name: string = PokeRuleUtil.Instance.CenterFixedBox.get(orderPoint.col);
+                SceneUtil.getComponentByName<FixedBox>(name).removeBoxChild();
+            }
+            PokeRuleUtil.Instance.pokeQueue[orderPoint.col].push(...moveQueue);
+            // 移动扑克牌计算动画 =========
+            moveQueue.forEach(pokeName => {
+                // 计算位置
+                const [col, row] = PokeRuleUtil.Instance.pokeQueue.location(pokeName);
+                const { x, y } = PokeRuleUtil.Instance.getPointByIndex(col, row);
+                // 移动扑克牌
+                DropBaseUtil.moveTween(SceneUtil.getComponentByName(pokeName), { x, y });
+            })
+        }
         return true;
     }
 }

@@ -80,7 +80,6 @@ class PokeRandomCreator {
                 }
             });
         }
-        console.log(this.poolArray)
         return this;
     }
 

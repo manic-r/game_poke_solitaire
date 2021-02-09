@@ -106,17 +106,11 @@ class PokeRuleUtil {
      */
     public getPokeImmediatelyPoint(name: string): PokePoint {
         const component: Box = SceneUtil.getComponentByName(name);
-        let key: string = '';
-        if (component instanceof FixedBox) {
-            if (component.name.startsWith('')) {
-
-            }
-            key = 'CenterFixedBox';
-        } else if (component instanceof Poke) {
-            key = 'pokeQueue';
-        }
-        const [col, row] = this[key].location(name);
-        return { col, row: row || -1 };
+        const [col, row] = this[component.config.off.fixed.storey].location(name);
+        return {
+            col: Object.isLegal(col) ? col : -1,
+            row: Object.isLegal(row) ? row : -1
+        };
     }
 
     /**
@@ -138,11 +132,28 @@ class PokeRuleUtil {
      * @param row 所在行第几个位置(从0开始)
      */
     public getPointByIndex(col: number, row: number): Point {
-        const layout: Point[] = SceneManagerUtil.Instance.config.layout.temporary.in;
+        const layout: Point[] = SceneManagerUtil.Instance.config.layout.CenterFixedBox;
         const marge: number = SceneManagerUtil.Instance.config.MARGIN_TOP;
         return {
             x: layout[col].x,
             y: row * marge + layout[col].y
+        }
+    }
+
+    /**
+     * 计算控件坐落位置（通过控件名称）
+     * @param value 控件名称
+     */
+    public reckonPointByNameOrComponent<T extends string | Box>(value: T): Point {
+        const component: Box =
+            typeof value === 'string' ? SceneUtil.getComponentByName(value) : (value as Box);
+        const storey: FixedStorey = component.config.off.fixed.storey;
+        const queue: string[] | string[][] = this[storey];
+        const [col, row]: number[] = queue.location(component.name);
+        const layout: Point[] = SceneManagerUtil.Instance.config.layout[storey === 'pokeQueue' ? 'CenterFixedBox' : storey];
+        return {
+            x: layout[col].x,
+            y: (row || 0) * SceneManagerUtil.Instance.config.MARGIN_TOP + layout[col].y
         }
     }
 
@@ -155,6 +166,7 @@ class PokeRuleUtil {
         const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
         // 获取扑克牌队列
         const index: number[] = this.pokeQueue.location(name);
+        if (!Object.isLegal(index) || index.length === 0) return false;
         // 获取其下队列
         const queue: string[] = this.pokeQueue[index[0]].slice(index[1]);
         // 获取扑克牌队列
@@ -180,10 +192,37 @@ class PokeRuleUtil {
         return true;
     }
 
+    public validAdsorbToTop() {
+
+    }
+
     /**
      * 处理扑克牌合并
      */
     public handleMarge() {
-
+        SceneUtil.getComponentByNames<FixedBox>(this.GearsBox)
+            .filter(component => component.next)
+            .forEach(component => {
+                const next: string = component.next;
+                for (let pokeQueue of this.pokeQueue) {
+                    console.log('输出PokeQueue')
+                    const lastPoke: string = pokeQueue.last();
+                    if (lastPoke && (lastPoke === next
+                        || lastPoke.endsWith(next))) {
+                        // 移除扑克队列对象
+                        pokeQueue.pop();
+                        // 将当前扑克牌移动至对应位置
+                        egret.Tween.get(SceneUtil.getComponentByName<Poke>(lastPoke))
+                            .to({ x: component.x, y: component.y }, 300, egret.Ease.sineIn)
+                            .call(() => {
+                                SceneUtil.removeComponentByName(lastPoke);
+                                // 记录当前队列扑克
+                                component.addBoxChild(lastPoke);
+                                this.handleMarge();
+                            })
+                        break;
+                    }
+                }
+            })
     }
 }

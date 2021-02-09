@@ -19,17 +19,18 @@ class Config implements ConfigInterface {
     // 游戏数据
     gameData: StoreSave;
 
+    // 状态标识key
+    GAME_END_STATE_KEY: string = 'start';
+
     constructor() {
         // 计算空隙大小（必要）
         const stage: egret.Stage = SceneManagerUtil.Instance.rootLayer.stage;
         this.space = (stage.stageWidth - this.POKE_TYPE.length * 2 * this.POKE_WIDTH) / (this.POKE_TYPE.length * 2 + 1);
         // 初始化布局对象 ===
         this.layout = {
-            gears: this.createGearsPoint(),
-            temporary: {
-                out: this.createOutTemporaryPoint(),
-                in: this.createInTemporaryPoint()
-            }
+            GearsBox: this.createGearsPoint(),
+            TopFixedBox: this.createOutTemporaryPoint(),
+            CenterFixedBox: this.createInTemporaryPoint()
         }
         // 初始化布局对象 ===
         // 获取扑克牌对象
@@ -96,7 +97,7 @@ class Config implements ConfigInterface {
             const result: string[][] = [];
             const creator: PokeRandomCreator = new PokeRandomCreator(aClass.POKE_TYPE);
             // 每行个数
-            const length: number = aClass.layout.temporary.in.length;
+            const length: number = aClass.layout.CenterFixedBox.length;
             for (let i = 0;
                 i < aClass.MAX_TYPE_NUM * aClass.POKE_TYPE.length;
                 i++) {
@@ -112,6 +113,8 @@ class Config implements ConfigInterface {
 
         return {
             pokeQueue: creator(this),
+            // TODO:
+            // pokeQueue: [['pk_d_1'], ['pk_a_1'], ['pk_c_1'], ['pk_b_1']],
             gearsQueue: [],
             topBoxQueue: []
         };
@@ -121,11 +124,14 @@ class Config implements ConfigInterface {
      * 创建游戏数据
      */
     private initGameData() {
+        console.log('out  this.GAME_END_STATE_KEY', this.GAME_END_STATE_KEY)
         /**
          * 获取游戏状态
          * @returns 已结束返回: false, 未结束返回: true
          */
+        const that: this = this;
         function gameEndState() {
+            console.log('in  this.GAME_END_STATE_KEY', that.GAME_END_STATE_KEY)
             const state: string | boolean = egret.localStorage.getItem(this.GAME_END_STATE_KEY) || '0';
             return state === '1';
         }

@@ -23,6 +23,7 @@ abstract class SceneBase extends eui.Component {
             console.log(PokeRuleUtil.Instance.pokeQueue);
             console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.TopFixedBox));
             console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.CenterFixedBox));
+            console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.GearsBox));
         }, this);
     }
 

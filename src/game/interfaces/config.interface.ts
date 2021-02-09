@@ -22,14 +22,12 @@ interface ConfigInterface {
 
 interface Layout {
     // 临时盒子：扑克牌可放置的额外盒子
-    temporary: {
-        // 外部
-        out: Point[],
-        // 内部（默认压在上面的）
-        in: Point[]
-    }
+    // 外部
+    TopFixedBox: Point[],
+    // 内部（默认压在上面的）
+    CenterFixedBox: Point[],
     // 收纳盒：满足条件后统一收回的位置
-    gears: Point[]
+    GearsBox: Point[]
 }
 
 interface Point {

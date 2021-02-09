@@ -73,22 +73,23 @@ class DropBaseUtil {
         // ================================================
         // 获取所有拖拽的扑克
         const index = PokeRuleUtil.Instance.pokeQueue.location(poke.name);
-        const pokeNames: string[] = PokeRuleUtil.Instance.pokeQueue[index[0]].slice(index[1]);
-        console.log(`____________End 移动处理, ${poke.name} 下面全部被移动的扑克`, pokeNames)
-        /* PokeRuleUtil.Instance.getPokeNextPokes(poke.name) */
-        SceneUtil.getComponentByNames<Poke>(pokeNames).forEach(row => {
+        const pokeNames: string[] = index.length === 0 ? [poke.name] : PokeRuleUtil.Instance.pokeQueue[index[0]].slice(index[1]);
+        pokeNames.forEach(pokeName => {
+            const poke: Poke = SceneUtil.getComponentByName(pokeName);
             // 移除遮罩
-            DropBaseUtil.removeMask(row, DropBase.MASK_OF_POKE);
+            DropBaseUtil.removeMask(poke, DropBase.MASK_OF_POKE);
             // 重置扑克牌记录
             DropBaseUtil.deleteDropPoke();
             if (!canMove) {
                 // 重置回到上一次的位置
-                DropBaseUtil.moveTween(row, { x: row._BEFORE_DROP_X, y: row._BEFORE_DROP_Y });
+                DropBaseUtil.moveTween(poke, { x: poke._BEFORE_DROP_X, y: poke._BEFORE_DROP_Y });
             } else {
                 DropBaseUtil.unClock();
             }
         })
-        console.log('结束时的处理')
+        if (canMove) {
+            PokeRuleUtil.Instance.handleMarge();
+        }
     }
 
     /**
