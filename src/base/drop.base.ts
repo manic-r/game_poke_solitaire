@@ -15,18 +15,13 @@ abstract class DropBase extends SceneBase {
     public XTouch: number;
     // 纵向移动位置
     public YTouch: number;
-    // 拖拽前所在位置: x
-    public _BEFORE_DROP_X: number;
-    // 拖拽前所在位置: y
-    public _BEFORE_DROP_Y: number;
-
     // 拖拽遮罩组件名称
     public static MASK_OF_POKE: string = 'MASK_OF_POKE';
     // 注册拖拽
     private _REGISTER: boolean;
 
-    // 记录选中时其下面整列扑克
-    private pokeNextPokes: Poke[] = [];
+    // 数据组
+    private selectPokes: Poke[] = [];
 
     /**
      * 构造函数
@@ -59,21 +54,19 @@ abstract class DropBase extends SceneBase {
 
     private onTouchBegin({ stageX, stageY }: egret.TouchEvent) {
         if (!this.beforeTouchBeginHandle(this.Child.name)) return;
-        // 记录当前拖拽的唯一值
-        DropBaseUtil.recordDropPoke(this._GROUP_CODE, this.Child.name);
-        // 获取其下所有扑克
-        this.pokeNextPokes = PokeRuleUtil.Instance.getPokeNextPokes(this.Child.name);
-        this.pokeNextPokes
-            .forEach(poke => {
-                poke.XTouch = stageX;
-                poke.YTouch = stageY;
-                poke._BEFORE_DROP_X = poke.x;
-                poke._BEFORE_DROP_Y = poke.y;
-                // 放置遮罩
-                DropBaseUtil.createMask(poke, { name: DropBase.MASK_OF_POKE });
-                // 拖拽时居上
-                this.root.setChildIndex(this.root.getChildByName(poke.name), 100);
-            })
+        // 获取当前扑克牌中的全部队列
+        const selectQueue: string[] = SceneUtil.getSelectPokeQueue(this.Child);
+        // 记录当前拖拽的唯一值和扑克牌队列
+        DropBaseUtil.recordDropPoke(this._GROUP_CODE, selectQueue);
+        this.selectPokes = DropBaseUtil.getSelectedPokes();
+        this.selectPokes.forEach(poke => {
+            poke.XTouch = stageX;
+            poke.YTouch = stageY;
+            // 放置遮罩
+            DropBaseUtil.createMask(poke, { name: DropBase.MASK_OF_POKE });
+            // 拖拽时居上
+            this.root.setChildIndex(this.root.getChildByName(poke.name), 100);
+        })
     }
 
     /**
@@ -87,20 +80,20 @@ abstract class DropBase extends SceneBase {
         if (!this.beforeTouchMoveHandle(this.Child.name)) return;
         // 开启移动锁定
         DropBaseUtil.clock();
-        this.pokeNextPokes
-            .forEach((poke, index) => {
-                setTimeout(() => {
-                    // 根据定位点，移动的x像素大小
-                    const moveX: number = stageX - poke.XTouch;
-                    // 根据定位点，移动的y像素大小
-                    const moveY: number = stageY - poke.YTouch;
-                    poke.XTouch = stageX;
-                    poke.YTouch = stageY;
-                    // 移动当前画像
-                    poke.x = poke.x + moveX;
-                    poke.y = poke.y + moveY;
-                }, 50 * index);
-            })
+        this.selectPokes.forEach((poke/* , index */) => {
+            setTimeout(() => {
+                // 根据定位点，移动的x像素大小
+                const moveX: number = stageX - poke.XTouch;
+                // 根据定位点，移动的y像素大小
+                const moveY: number = stageY - poke.YTouch;
+                console.log('moveX', moveX, 'moveY', moveY)
+                poke.XTouch = stageX;
+                poke.YTouch = stageY;
+                // 移动当前画像
+                poke.x = poke.x + moveX;
+                poke.y = poke.y + moveY;
+            }/* , 50 * index */);
+        });
     }
 
     /**
@@ -110,7 +103,7 @@ abstract class DropBase extends SceneBase {
     protected abstract beforeTouchMoveHandle(name: string): boolean;
 
     private onTouchEnd() {
-        DropBaseUtil.onTouchEndHandle(this.beforeTouchEndHandle());
+        DropBaseUtil.onTouchEndHandle(/* this.beforeTouchEndHandle() */false);
     }
 
     /**
@@ -124,9 +117,10 @@ abstract class DropBase extends SceneBase {
      * @return 如果是当前控件，则返回true
      */
     public dropMoveValid() {
-        const touchSelected: TouchSelected = this.stage[DropBase.TOUCH_SELECTED] as TouchSelected || { groupId: undefined, componentName: undefined };
+        const touchSelected: TouchSelected = DropBaseUtil.getDropPoke();
         return this._GROUP_CODE == touchSelected.groupId
-            && this.Config.off.poke.name == touchSelected.componentName;
+        // TODO: 下方代码被屏蔽
+        // && this.Config.off.poke.name == touchSelected.componentName;
     }
 
     /**

@@ -1,4 +1,4 @@
 interface TouchSelected {
     groupId: string;
-    componentName: string;
+    componentName: string[];
 }

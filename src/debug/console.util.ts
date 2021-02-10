@@ -81,7 +81,7 @@ class ConsoleUtil {
         console.log(`%cstart===============${start}===============start`, font + descColor);
         if (show.length === 0) console.log(`%c无输入`, error + contextMargin);
         show.forMoreEach((a, b) => {
-            console.log(`%c${a} => ${b}`, font + contextColor + contextMargin)
+            console.log(`%c${a} => `, font + contextColor + contextMargin, b)
         });
         console.log(`%cend===============${start}===============end`, font + descColor);
         console.log('\n')

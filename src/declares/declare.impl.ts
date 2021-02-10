@@ -84,4 +84,22 @@ Array.prototype.forOrder = function <T>(callbackfn: (value: T, nextValue: T, arr
         }
     }
 }
+// 根据指定的数值分组遍历数据
+Array.prototype.forMoreEach = function <T>(callbackfn: (...array: T[]) => any, groupNum: number = 2): void {
+    // 获取遍历次数
+    const forIndex: number = Math.ceil(this.length / groupNum);
+    for (let i = 0; i < forIndex; i++) {
+        const array: T[] = [];
+        for (let j = 0; j < groupNum; j++) {
+            array.push(this.shift());
+        }
+        callbackfn(...array);
+    }
+}
+// 判断两个数组元素是否一致
+Array.prototype.isEquals = function <T>(array: T[]): boolean {
+    if (!array) return false;
+    if (this.length !== array.length) return false;
+    return this.every((value: T) => array.deepContains(value));
+}
 //////////////////////////////////////////////////////////////////////////////////////////////

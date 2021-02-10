@@ -38,27 +38,44 @@ class DropBaseUtil {
     /**
      * 获取选中的组件(拖拽标记的)
      */
-    public static getSelectedPoke(name: string): Poke {
-        // 获取做拽的控件内容
-        const touchSelected: TouchSelected = SceneManagerUtil.Instance.rootLayer.stage[name] as TouchSelected;
-        if (!touchSelected || !touchSelected.componentName) return;
+    public static getSelectedPokes(): Poke[] {
         // 根据名称获取组件对象
-        const poke: Poke = SceneUtil.getComponentByName(touchSelected.componentName);
-        return poke;
+        const pokes: Poke[] = SceneUtil.getComponentByNames(this.getDropPokeName());
+        return pokes;
     }
 
     /**
      * 记录当前拖拽扑克牌
      */
-    public static recordDropPoke(groupId: string, name: string) {
-        SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId, componentName: name };
+    public static recordDropPoke(groupId: string, names: string[]) {
+        SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId, componentName: names };
     }
 
     /**
      * 移除当前拖拽扑克牌
      */
     public static deleteDropPoke() {
-        SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId: null, componentName: null };
+        SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId: null, componentName: [] };
+    }
+
+    /**
+     * 获取存储的扑克牌对象
+     */
+    public static getDropPokeName(): string[] {
+        return SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED].componentName || [];
+    }
+
+    /**
+     * 获取存储的拖拽对象
+     */
+    public static getDropPoke(): TouchSelected {
+        return SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] || { groupId: null, componentName: [] };
+    }
+
+    public static selectPokesHandle<T>(callbackfn: (param: T, index: number) => any) {
+        // 获取当前扑克牌中的全部队列
+        const pokeNames: string[] = this.getDropPokeName() || [];
+        pokeNames.forEach((name, index) => callbackfn(SceneUtil.getComponentByName(name), index));
     }
 
     /**
@@ -68,28 +85,30 @@ class DropBaseUtil {
     public static onTouchEndHandle(canMove: boolean) {
         // ================================================
         // 为了避免抬起时是在扑克牌上，此处直接获取选中扑克牌信息
-        const poke: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
-        if (!poke) return;
+        const selectNames: string[] = DropBaseUtil.getDropPokeName();
+        if (selectNames.length === 0) return;
         // ================================================
+        // 扑克牌队列中获取扑克牌对象
+        const queue: string[] = SceneUtil.getSelectPokeQueue(selectNames[0]);
+        // 判断两个对象是否相等， 不相等则撤回记录到原始位置
+        if (selectNames.isEquals(queue)) {
+            canMove = false;
+        }
         // 获取所有拖拽的扑克
-        const index = PokeRuleUtil.Instance.pokeQueue.location(poke.name);
-        const pokeNames: string[] = index.length === 0 ? [poke.name] : PokeRuleUtil.Instance.pokeQueue[index[0]].slice(index[1]);
-        pokeNames.forEach(pokeName => {
-            const poke: Poke = SceneUtil.getComponentByName(pokeName);
+        DropBaseUtil.selectPokesHandle<Poke>(poke => {
             // 移除遮罩
             DropBaseUtil.removeMask(poke, DropBase.MASK_OF_POKE);
-            // 重置扑克牌记录
-            DropBaseUtil.deleteDropPoke();
             if (!canMove) {
-                // 重置回到上一次的位置
-                DropBaseUtil.moveTween(poke, { x: poke._BEFORE_DROP_X, y: poke._BEFORE_DROP_Y });
-            } else {
-                DropBaseUtil.unClock();
+                // 重置回到上一次的位置(重新计算，防止偏移)
+                DropBaseUtil.moveTween(poke, PokeRuleUtil.Instance.reckonPointByNameOrComponent(poke));
             }
         })
         if (canMove) {
             PokeRuleUtil.Instance.handleMarge();
         }
+        // 重置扑克牌记录
+        DropBaseUtil.deleteDropPoke();
+        DropBaseUtil.unClock();
     }
 
     /**
@@ -134,9 +153,10 @@ class DropBaseUtil {
      */
     public static isDropNow(poke: Poke): boolean {
         if (!poke) return false;
-        const select: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
+        // 获取存储的扑克牌对象
+        const select: string[] = this.getDropPokeName();
         if (!select) return false;
-        return select.name === poke.name;
+        return select.deepContains(poke.name);
     }
 
     /**

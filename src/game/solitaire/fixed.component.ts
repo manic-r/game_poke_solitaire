@@ -88,9 +88,8 @@ class FixedBox extends SceneBase {
             return queue.length === 0;
         } else if (this.config.off.fixed.storey === 'TopFixedBox') {
             // 获取拖拽扑克牌名称
-            const { name }: Poke = DropBaseUtil.getSelectedPoke(DropBase.TOUCH_SELECTED);
-            const pokes: Poke[] = PokeRuleUtil.Instance.getPokeNextPokes(name);
-            if (pokes.length != 1) return false;
+            const names: string[] = DropBaseUtil.getDropPokeName();
+            if (names.length != 1) return false;
         }
         return true;
     }

@@ -51,12 +51,15 @@ class Poke extends DropBase {
     }
 
     protected beforeTouchBeginHandle(name: string): boolean {
-        console.log('beforeTouchBeginHandle', DropBaseUtil.isClock())
-        return !DropBaseUtil.isClock() && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
+        // TODO:
+        // if (DropBaseUtil.isClock()) return false;
+        ConsoleUtil.clips('开始点击的事件', 'DropBaseUtil.isClock()', DropBaseUtil.isClock());
+        return !DropBaseUtil.isClock()// && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
     }
 
     protected beforeTouchMoveHandle(name: string): boolean {
-        return this.dropMoveValid() && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
+        ConsoleUtil.clips('beforeTouchMoveHandle', 'this.dropMoveValid()', this.dropMoveValid())
+        return this.dropMoveValid()/*  && PokeRuleUtil.Instance.validSelectPokeCanDrop(name) */;
     }
 
     protected beforeTouchEndHandle(): boolean {
@@ -114,8 +117,7 @@ class Poke extends DropBase {
             // 移动扑克牌计算动画 =========
             moveQueue.forEach(pokeName => {
                 // 计算位置
-                const [col, row] = PokeRuleUtil.Instance.pokeQueue.location(pokeName);
-                const { x, y } = PokeRuleUtil.Instance.getPointByIndex(col, row);
+                const { x, y } = PokeRuleUtil.Instance.reckonPointByNameOrComponent(pokeName);
                 // 移动扑克牌
                 DropBaseUtil.moveTween(SceneUtil.getComponentByName(pokeName), { x, y });
             })

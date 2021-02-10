@@ -67,4 +67,16 @@ interface Array<T> {
      * @returns boolean
      */
     forOrder(callbackfn: (value: T, nextValue: T, array: T[]) => any): void;
+    /**
+     * 根据指定的数值分组遍历数据
+     * @param callbackfn 回调函数
+     * @param groupNum 指定分组次数
+     */
+    forMoreEach(callbackfn: (...array: T[]) => any, groupNum?: number): void;
+    /**
+     * 判断两个数组元素是否一致
+     * @param array 对象数组
+     * @returns true: 一致, false: 不一致
+     */
+    isEquals(array: T[]): boolean;
 }

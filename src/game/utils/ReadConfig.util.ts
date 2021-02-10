@@ -124,7 +124,6 @@ class Config implements ConfigInterface {
      * 创建游戏数据
      */
     private initGameData() {
-        console.log('out  this.GAME_END_STATE_KEY', this.GAME_END_STATE_KEY)
         /**
          * 获取游戏状态
          * @returns 已结束返回: false, 未结束返回: true
