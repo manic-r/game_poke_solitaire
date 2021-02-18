@@ -96,7 +96,10 @@ class DropBaseUtil {
         // ================================================
         // 为了避免抬起时是在扑克牌上，此处直接获取选中扑克牌信息
         const selectNames: string[] = DropBaseUtil.getDropPokeName();
-        if (selectNames.length === 0) return;
+        if (selectNames.length === 0) {
+            LocationState.reset();
+            return;
+        }
         // ================================================
         // 扑克牌队列中获取扑克牌对象
         const queue: string[] = SceneUtil.getSelectPokeQueue(selectNames[0]);
@@ -110,8 +113,6 @@ class DropBaseUtil {
             PokeRuleUtil.Instance.handleMarge();
         }
         // 重置扑克牌记录
-        // this.deleteDropPoke();
-        // this.unClock();
         LocationState.reset();
     }
 

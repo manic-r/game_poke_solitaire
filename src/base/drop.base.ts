@@ -56,10 +56,10 @@ abstract class DropBase extends SceneBase {
         if (!this.beforeTouchBeginHandle(this.Child.name)) return;
         // 获取当前扑克牌中的全部队列
         const selectQueue: string[] = SceneUtil.getSelectPokeQueue(this.Child);
-        console.log('selectQueue', selectQueue)
         // 记录当前拖拽的唯一值和扑克牌队列
         DropBaseUtil.recordDropPoke(this._GROUP_CODE, selectQueue);
         this.selectPokes = DropBaseUtil.getSelectedPokes();
+        // ConsoleUtil.clips('onTouchBegin', 'this.selectPokes', this.selectPokes)
         this.selectPokes.forEach(poke => {
             poke.XTouch = stageX;
             poke.YTouch = stageY;
@@ -81,7 +81,7 @@ abstract class DropBase extends SceneBase {
         if (!this.beforeTouchMoveHandle(this.Child.name)) return;
         // 开启移动锁定
         DropBaseUtil.clock();
-        console.log('this.selectPokes', this.selectPokes)
+        // ConsoleUtil.clips('onTouchMove', 'this.selectPokes', this.selectPokes)
         this.selectPokes.forEach((poke/* , index */) => {
             // setTimeout(() => {
             // 根据定位点，移动的x像素大小
@@ -112,16 +112,6 @@ abstract class DropBase extends SceneBase {
     * @returns 是否可重定位移动 {true: 是, false: 不可移动}
     */
     protected abstract beforeTouchEndHandle(): boolean;
-
-    /**
-     * 拖拽时验证
-     * @return 如果是当前控件，则返回true
-     */
-    public dropMoveValid() {
-        const touchSelected: TouchSelected = DropBaseUtil.getDropPoke();
-        return this._GROUP_CODE == touchSelected.groupId
-            && touchSelected.componentName.deepContains(this.Config.off.poke.name);
-    }
 
     /**
      *获取子组件控件

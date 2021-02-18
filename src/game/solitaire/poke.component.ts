@@ -51,17 +51,11 @@ class Poke extends DropBase {
     }
 
     protected beforeTouchBeginHandle(name: string): boolean {
-        // TODO:
-        // ConsoleUtil.clips('beforeTouchBeginHandle', '!DropBaseUtil.isClock()', !DropBaseUtil.isClock())
-        return true;
-        // if (DropBaseUtil.isClock()) return false;
-        return !DropBaseUtil.isClock() /* && PokeRuleUtil.Instance.validSelectPokeCanDrop(name); */
+        return !DropBaseUtil.isClock() && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
     }
 
     protected beforeTouchMoveHandle(name: string): boolean {
-        // ConsoleUtil.clips('beforeTouchMoveHandle', 'this.dropMoveValid()', this.dropMoveValid())
-        return true;
-        return this.dropMoveValid() /* && PokeRuleUtil.Instance.validSelectPokeCanDrop(name); */
+        return PokeRuleUtil.Instance.dropMoveValid(name) //&& PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
     }
 
     protected beforeTouchEndHandle(): boolean {
@@ -75,27 +69,39 @@ class Poke extends DropBase {
         }
         // 获取碰撞点
         const hitPokes: Box = DropBaseUtil.getCollisionCheck(this);
-        ConsoleUtil.clips('碰撞点', 'hitPokes', hitPokes)
+        // ConsoleUtil.clips('碰撞点', 'hitPokes', hitPokes)
         // 如果未碰撞或者碰撞逻辑不满足时（交叉减小）返回
-        if (!hitPokes /* || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes) */) {
+        if (!hitPokes || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes)) {
             return false;
         }
         // 扑克牌碰撞逻辑 =================================================
         // 历史列处理
-        // 获取扑克牌坐标[拖拽之前]
-        const historyPokePoint: PokePoint = SceneUtil.getPokeImmediatelyPoint(this.name);
-        // 历史操作列
-        const historyQueue: string[] = PokeRuleUtil.Instance.getPokeQueueByIndex(historyPokePoint.col);
-        // 移除原本数据，返回移除的集合
-        const moveQueue: string[] = historyQueue.remove(historyPokePoint.row);
-        /**
-         * 当historyQueue.last()为false时表示当前扑克牌为本列最后一张扑克牌，会全部移动
-         * 此时设置fixed盒子属性
-         */
-        if (!historyQueue.last()) {
-            // 获取对应的fixed盒子信息
-            const name: string = PokeRuleUtil.Instance.CenterFixedBox.get(historyPokePoint.col);
-            SceneUtil.getComponentByName<FixedBox>(name).removeBoxChild();
+        let moveQueue: string[];
+        // 判断历史位置是否在TopQueue
+        if (PokeRuleUtil.Instance.isInTopQueue(this)) {
+            moveQueue = [this.name];
+            PokeRuleUtil.Instance.TopFixedBox.forEach(name => {
+                const box: FixedBox = SceneUtil.getComponentByName(name);
+                if (box.hasName(this.name)) {
+                    box.removeBoxChild();
+                }
+            })
+        } else {
+            // 获取扑克牌坐标[拖拽之前]
+            const historyPokePoint: PokePoint = SceneUtil.getPokeImmediatelyPoint(this.name);
+            // 历史操作列
+            const historyQueue: string[] = PokeRuleUtil.Instance.getPokeQueueByIndex(historyPokePoint.col);
+            // 移除原本数据，返回移除的集合
+            moveQueue = historyQueue.remove(historyPokePoint.row);
+            /**
+             * 当historyQueue.last()为false时表示当前扑克牌为本列最后一张扑克牌，会全部移动
+             * 此时设置fixed盒子属性
+             */
+            if (!historyQueue.last()) {
+                // 获取对应的fixed盒子信息
+                const name: string = PokeRuleUtil.Instance.CenterFixedBox.get(historyPokePoint.col);
+                SceneUtil.getComponentByName<FixedBox>(name).removeBoxChild();
+            }
         }
         // 目标列处理
         // 如果是头部的收集盒子

@@ -25,6 +25,7 @@ abstract class SceneBase extends eui.Component {
             console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.CenterFixedBox));
             console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.GearsBox));
             ConsoleUtil.clips('输出基本信息', 'DropBaseUtil.getDropPoke()', DropBaseUtil.getDropPoke())
+            ConsoleUtil.clips('全局缓存', 'LocationState', LocationState.log())
         }, this);
     }
 

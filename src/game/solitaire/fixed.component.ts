@@ -103,4 +103,21 @@ class FixedBox extends SceneBase {
         if (this.child === name) return true;
         return false;
     }
+
+    /**
+     * 判断是否结束
+     * @returns true: 结束
+     * @returns false: 未结束
+     */
+    public ending(): boolean {
+        const ending: string[] = ['pk_a_13', 'pk_b_13', 'pk_c_13', 'pk_d_13'];
+        return ending.deepContains(this.child);
+    }
+
+    /**
+     * 获取child
+     */
+    public get body(): string {
+        return this.child;
+    }
 }

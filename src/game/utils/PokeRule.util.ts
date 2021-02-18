@@ -11,7 +11,6 @@ class PokeRuleUtil {
         return PokeRuleUtil._manager;
     }
     // 扑克牌队列
-    // public pokeQueue: Poke[][] = [];
     public pokeQueue: string[][] = [];
     // 聚合队列
     public GearsBox: string[] = [];
@@ -41,10 +40,19 @@ class PokeRuleUtil {
      * 处理扑克牌合并
      */
     public handleMarge() {
+        // 判断游戏是否结束，结束则跳转结束画面
+        if (PokeRuleUtil.Instance.gameEnding()) {
+            alert('通关成功！')
+            return;
+        }
         SceneUtil.getComponentByNames<FixedBox>(this.GearsBox)
             .filter(component => component.next)
             .forEach(component => {
                 const next: string = component.next;
+                // 获取扑克牌列表和TopQueue内容列表
+                const queue: string[][] = [...this.pokeQueue];
+                queue.push(this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body).filter(name => name));
+                console.log(queue)
                 for (let pokeQueue of this.pokeQueue) {
                     const lastPoke: string = pokeQueue.last();
                     if (lastPoke && (lastPoke === next
@@ -123,6 +131,16 @@ class PokeRuleUtil {
     public getPokeQueueByIndex(index: number): string[] {
         return this.pokeQueue[index] || [];
     }
+
+    /**
+     * 验证游戏是否结束
+     */
+    public gameEnding(): boolean {
+        return this.GearsBox.filter(name => {
+            const box: FixedBox = SceneUtil.getComponentByName(name);
+            return box.ending();
+        }).length === 4;
+    }
     // ===============================================================================
 
     /**
@@ -135,7 +153,6 @@ class PokeRuleUtil {
             PokeRuleUtil._top_center_hit_point = [];
             // 合并顶部队列、中间部分队列
             const names: string[] = [...(this.TopFixedBox || []), ...(this.CenterFixedBox || [])];
-            ConsoleUtil.clips('获取固定框触碰点集合', '合并顶部队列、中间部分队列', names)
             SceneUtil.getComponentByNames<FixedBox>(names)
                 .filter(fixed => fixed.canAdsorb())
                 .forEach(fixed =>
@@ -143,7 +160,6 @@ class PokeRuleUtil {
                     PokeRuleUtil._top_center_hit_point.push(PokeInitUtil.computeCapePoint(fixed))
                 )
         }
-        ConsoleUtil.clips('获取固定框触碰点集合', 'PokeRuleUtil._top_center_hit_point', PokeRuleUtil._top_center_hit_point)
         return PokeRuleUtil._top_center_hit_point;
     }
 
@@ -168,6 +184,39 @@ class PokeRuleUtil {
             ...PokeRuleUtil.Instance.fixedHitPointMapping(bool),
             ...PokeRuleUtil.Instance.pokeHitPointMapping
         ]
+    }
+
+    /**
+     * 判断扑克牌花色是否正确，是否可放置
+     * @param localPoke 当前扑克牌
+     * @param hitPoke 碰撞的目标扑克牌
+     * @returns true: 可放置, false: 不可放置
+     */
+    public checkPokeSiteColor(localPoke: Poke, hitPoke: Box): boolean {
+        /**
+         * 逻辑：
+         * 1. 红色和黑色相互穿插
+         * 2. 序号逐渐缩小 (碰撞 > 当前)
+         */
+        // 当前拖动的扑克牌，对象为空，判断为不可放置
+        if (!localPoke) return false;
+        // 碰撞的目标扑克牌，对象为空，判断为不可放置
+        if (!hitPoke) return false;
+        // 如果碰撞的扑克是默认固定方块时,判断为可放置
+        if (hitPoke.config.off.fixed.is) return true;
+        // 判断花色
+        // 花色规则：对应Map 【a: '♥（红桃）', b: '♠（黑桃）', c: '♦（方块）', d: '♣（梅花）'】
+        // a -> b | d; b -> a | c; c -> b | d; d -> a | c;
+        // 处理花色
+        const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
+        const localColor: POKE_COLOR = roleMap[localPoke.config.off.poke.type];
+        const hitColor: POKE_COLOR = roleMap[hitPoke.config.off.poke.type];
+        if (localColor === hitColor) return false;
+        // 处理文字序号
+        const localFigure: number = Number(localPoke.config.off.poke.figure);
+        const hitFigure: number = Number(hitPoke.config.off.poke.figure);
+        if ((localFigure + 1) !== hitFigure) return false;
+        return true;
     }
 
     /**
@@ -207,5 +256,14 @@ class PokeRuleUtil {
             if ((localFigure - 1) !== nextFigure) return false;
         }
         return true;
+    }
+
+    /**
+     * 拖拽时验证
+     * @return 如果是当前控件，则返回true
+     */
+    public dropMoveValid(name: string) {
+        const touchSelected: TouchSelected = DropBaseUtil.getDropPoke();
+        return touchSelected.componentName.deepContains(name);/* this._GROUP_CODE == touchSelected.groupId && */
     }
 }
