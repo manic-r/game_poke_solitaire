@@ -69,7 +69,6 @@ class Poke extends DropBase {
         }
         // 获取碰撞点
         const hitPokes: Box = DropBaseUtil.getCollisionCheck(this);
-        // ConsoleUtil.clips('碰撞点', 'hitPokes', hitPokes)
         // 如果未碰撞或者碰撞逻辑不满足时（交叉减小）返回
         if (!hitPokes || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes)) {
             return false;

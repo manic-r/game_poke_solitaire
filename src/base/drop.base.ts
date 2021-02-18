@@ -59,7 +59,6 @@ abstract class DropBase extends SceneBase {
         // 记录当前拖拽的唯一值和扑克牌队列
         DropBaseUtil.recordDropPoke(this._GROUP_CODE, selectQueue);
         this.selectPokes = DropBaseUtil.getSelectedPokes();
-        // ConsoleUtil.clips('onTouchBegin', 'this.selectPokes', this.selectPokes)
         this.selectPokes.forEach(poke => {
             poke.XTouch = stageX;
             poke.YTouch = stageY;
@@ -81,7 +80,6 @@ abstract class DropBase extends SceneBase {
         if (!this.beforeTouchMoveHandle(this.Child.name)) return;
         // 开启移动锁定
         DropBaseUtil.clock();
-        // ConsoleUtil.clips('onTouchMove', 'this.selectPokes', this.selectPokes)
         this.selectPokes.forEach((poke/* , index */) => {
             // setTimeout(() => {
             // 根据定位点，移动的x像素大小

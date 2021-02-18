@@ -15,7 +15,6 @@ class LocationState {
         this.moveGroupId = null;
         this.moveQueue = [];
         this.clock = false;
-        console.log('执行了重置')
         return this;
     }
 

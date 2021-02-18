@@ -17,16 +17,6 @@ abstract class SceneBase extends eui.Component {
         if (!closeTouchEnd) {
             this.addEventListener(egret.TouchEvent.TOUCH_END, () => DropBaseUtil.onTouchEndHandle(false), this);
         }
-
-        // TODO: 手指开始点击时
-        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
-            console.log(PokeRuleUtil.Instance.pokeQueue);
-            console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.TopFixedBox));
-            console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.CenterFixedBox));
-            console.log(SceneUtil.getComponentByNames(PokeRuleUtil.Instance.GearsBox));
-            ConsoleUtil.clips('输出基本信息', 'DropBaseUtil.getDropPoke()', DropBaseUtil.getDropPoke())
-            ConsoleUtil.clips('全局缓存', 'LocationState', LocationState.log())
-        }, this);
     }
 
     protected abstract onComplete();

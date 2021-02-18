@@ -18,8 +18,6 @@ class FixedBox extends SceneBase {
             this.name = config.off.fixed.name;
         }
         this.root.addChild(this);
-        // TODO: 测试使用，console当前对象
-        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => console.log(this), this);
     }
 
     protected onComplete() {

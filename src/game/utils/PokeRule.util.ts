@@ -52,7 +52,6 @@ class PokeRuleUtil {
                 // 获取扑克牌列表和TopQueue内容列表
                 const queue: string[][] = [...this.pokeQueue];
                 queue.push(this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body).filter(name => name));
-                console.log(queue)
                 for (let pokeQueue of this.pokeQueue) {
                     const lastPoke: string = pokeQueue.last();
                     if (lastPoke && (lastPoke === next
