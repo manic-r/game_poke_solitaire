@@ -46,7 +46,6 @@ class PokeRuleUtil {
             .forEach(component => {
                 const next: string = component.next;
                 for (let pokeQueue of this.pokeQueue) {
-                    console.log('输出PokeQueue')
                     const lastPoke: string = pokeQueue.last();
                     if (lastPoke && (lastPoke === next
                         || lastPoke.endsWith(next))) {
@@ -74,14 +73,55 @@ class PokeRuleUtil {
     public reckonPointByNameOrComponent<T extends string | Box>(value: T): Point {
         const component: Box =
             typeof value === 'string' ? SceneUtil.getComponentByName(value) : (value as Box);
-        const storey: FixedStorey = component.config.off.fixed.storey;
+        let storey: FixedStorey;
+        let name: string;
+        if (this.isInTopQueue(value)) {
+            storey = 'TopFixedBox';
+            name = SceneUtil.getComponentByNames<FixedBox>(this.TopFixedBox)
+                .filter(box => box.hasName(component.name))
+                .map(box => box.name)[0];
+        } else {
+            storey = component.config.off.fixed.storey;
+            name = component.name;
+        }
         const queue: string[] | string[][] = this[storey];
-        const [col, row]: number[] = queue.location(component.name);
+        const [col, row]: number[] = queue.location(name);
         const layout: Point[] = SceneManagerUtil.Instance.config.layout[storey === 'pokeQueue' ? 'CenterFixedBox' : storey];
+        if (!Object.isLegal(col) && !Object.isLegal(row)) {
+            throw Error(`计算控件坐落位置, 获取位置不合法：${storey} => ${component.name} => ${col}-${row}`)
+        }
         return {
             x: layout[col].x,
             y: (row || 0) * SceneManagerUtil.Instance.config.MARGIN_TOP + layout[col].y
         }
+    }
+
+    /**
+     * 判断扑克牌是否是在TopQueue队列中
+     * @param value 控件名称|控件
+     * @returns {true: 在TopQueue中, false: 不在TopQueue中}
+     */
+    public isInTopQueue<T extends string | Box>(value: T): boolean {
+        const component: Box =
+            typeof value === 'string' ? SceneUtil.getComponentByName(value) : (value as Box);
+        // 判断是否是在`pokeQueue`中
+        const is: boolean = this.pokeQueue.deepContains(component.name);
+        // 如果存在, 则返回`false`
+        if (is) return false;
+        // 判断是否是在`TopFixedBox`中
+        // 规则：检查`TopFixedBox`控件是否是存在名称控件
+        const fixedBox: FixedBox[] = SceneUtil.getComponentByNames(this.TopFixedBox);
+        const exist: boolean = fixedBox.filterOwner(box => box.hasName(component.name));
+        if (exist) return true;
+        throw Error(`\`TopQueue\`队列中获取扑克牌属性异常！`)
+    }
+
+    /**
+     * 根据坐标在[pokeQueue]获取扑克牌队列
+     * @param index 坐标
+     */
+    public getPokeQueueByIndex(index: number): string[] {
+        return this.pokeQueue[index] || [];
     }
     // ===============================================================================
 
@@ -95,6 +135,7 @@ class PokeRuleUtil {
             PokeRuleUtil._top_center_hit_point = [];
             // 合并顶部队列、中间部分队列
             const names: string[] = [...(this.TopFixedBox || []), ...(this.CenterFixedBox || [])];
+            ConsoleUtil.clips('获取固定框触碰点集合', '合并顶部队列、中间部分队列', names)
             SceneUtil.getComponentByNames<FixedBox>(names)
                 .filter(fixed => fixed.canAdsorb())
                 .forEach(fixed =>
@@ -102,6 +143,7 @@ class PokeRuleUtil {
                     PokeRuleUtil._top_center_hit_point.push(PokeInitUtil.computeCapePoint(fixed))
                 )
         }
+        ConsoleUtil.clips('获取固定框触碰点集合', 'PokeRuleUtil._top_center_hit_point', PokeRuleUtil._top_center_hit_point)
         return PokeRuleUtil._top_center_hit_point;
     }
 
@@ -128,69 +170,6 @@ class PokeRuleUtil {
         ]
     }
 
-    // /**
-    //  * 判断扑克牌花色是否正确，是否可放置
-    //  * @param localPoke 当前扑克牌
-    //  * @param hitPoke 碰撞的目标扑克牌
-    //  * @returns true: 可放置, false: 不可放置
-    //  */
-    // public checkPokeSiteColor(localPoke: Poke, hitPoke: Poke): boolean {
-    //     /**
-    //      * 逻辑：
-    //      * 1. 红色和黑色相互穿插
-    //      * 2. 序号逐渐缩小 (碰撞 > 当前)
-    //      */
-    //     // 当前拖动的扑克牌，对象为空，判断为不可放置
-    //     if (!localPoke) return false;
-    //     // 碰撞的目标扑克牌，对象为空，判断为不可放置
-    //     if (!hitPoke) return false;
-    //     // 如果碰撞的扑克是默认固定方块时,判断为可放置
-    //     if (hitPoke.config.off.fixed.is) return true;
-    //     // 判断花色
-    //     // 花色规则：对应Map 【a: '♥（红桃）', b: '♠（黑桃）', c: '♦（方块）', d: '♣（梅花）'】
-    //     // a -> b | d; b -> a | c; c -> b | d; d -> a | c;
-    //     // 处理花色
-    //     const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
-    //     const localColor: POKE_COLOR = roleMap[localPoke.config.off.poke.type];
-    //     const hitColor: POKE_COLOR = roleMap[hitPoke.config.off.poke.type];
-    //     if (localColor === hitColor) return false;
-    //     // 处理文字序号
-    //     const localFigure: number = Number(localPoke.config.off.poke.figure);
-    //     const hitFigure: number = Number(hitPoke.config.off.poke.figure);
-    //     if ((localFigure + 1) !== hitFigure) return false;
-    //     return true;
-    // }
-
-    /** TODO:待删除
-     * 获取扑克牌即时坐标
-     * @param name 扑克牌名称
-     */
-    public getPokeImmediatelyPoint(name: string): PokePoint {
-        const component: Box = SceneUtil.getComponentByName(name);
-        let [col, row] = this[component.config.off.fixed.storey].location(name);
-        // 如果获取的结果为空，则表示未在对应的队列中，此时在Top中查找
-        if (!Object.isLegal(col) && !Object.isLegal(row)) {
-            [col, row] = this.TopFixedBox.location(name);
-        }
-        return {
-            col: Object.isLegal(col) ? col : -1,
-            row: Object.isLegal(row) ? row : -1
-        };
-    }
-
-    /**
-     * 获取指定扑克牌其下面的扑克
-     * @param name 扑克牌名称
-     */
-    public getPokeNextPokes(name: string): Poke[] {
-        // 获取指定扑克牌所在的即时坐标
-        const point: PokePoint = this.getPokeImmediatelyPoint(name);
-        if (!point) return [];
-        const rowQueue: string[] = this.pokeQueue[point.col] || [];
-        const names: string[] = rowQueue.slice(point.row) || [];
-        return SceneUtil.getComponentByNames(names);
-    }
-
     /**
      * 判断选中扑克牌列是否满足可拖拽效果
      * @param name 选中扑克牌名称
@@ -206,7 +185,7 @@ class PokeRuleUtil {
             return true;
         }
         // 获取其下队列
-        const queue: string[] = this.pokeQueue[index[0]].slice(index[1]);
+        const queue: string[] = SceneUtil.getSelectPokeQueue(name);
         // 获取扑克牌队列
         const pokes: Poke[] = SceneUtil.getComponentByNames(queue);
         for (let i = 0; i < pokes.length - 1; i++) {

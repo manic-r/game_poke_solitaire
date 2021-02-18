@@ -18,7 +18,7 @@ class FixedBox extends SceneBase {
             this.name = config.off.fixed.name;
         }
         this.root.addChild(this);
-        // TODO 测试使用，console当前对象
+        // TODO: 测试使用，console当前对象
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => console.log(this), this);
     }
 
@@ -83,7 +83,7 @@ class FixedBox extends SceneBase {
          */
         if (this.child) return false;
         if (this.config.off.fixed.storey === 'CenterFixedBox') {
-            const { col } = PokeRuleUtil.Instance.getPokeImmediatelyPoint(this.name);
+            const { col } = SceneUtil.getPokeImmediatelyPoint(this.name);
             const queue: string[] = PokeRuleUtil.Instance.pokeQueue[col];
             return queue.length === 0;
         } else if (this.config.off.fixed.storey === 'TopFixedBox') {
@@ -92,5 +92,15 @@ class FixedBox extends SceneBase {
             if (names.length != 1) return false;
         }
         return true;
+    }
+
+    /**
+     * 判断悬浮控件中是否是当前名称
+     * @param name 名称
+     */
+    public hasName(name: string): boolean {
+        if (!this.child) return false;
+        if (this.child === name) return true;
+        return false;
     }
 }

@@ -31,6 +31,11 @@ class Main extends eui.UILayer {
 
     constructor() {
         super();
+        // TODO:
+        // ConsoleUtil.clips('Main', 'window', window);
+        window.addEventListener('error', () => {
+            LocationState.reset();
+        });
     }
 
     protected createChildren(): void {

@@ -73,17 +73,22 @@ class ConsoleUtil {
      */
     public static clips(start: string, ...show: any[]) {
         const font: string = 'font-size:12px;';
+        const tagColor: string = 'color:#03a9f4;';
+        const tagMargin: string = 'margin-left: 20px;';
         const descColor: string = 'color:#cac8c6;';
         const contextColor: string = 'color:#2cbdffb0;';
         const error: string = 'font-size:10px;color:red;';
         const contextMargin: string = 'margin-left: 20px;';
         console.log('\n')
-        console.log(`%cstart===============${start}===============start`, font + descColor);
+        const date: Date = new Date();
+        console.log(`%c :start %c${start}`, font + tagColor, font + tagColor)
+        // console.log(`%cstart===============${start}===============start`, font + descColor);
         if (show.length === 0) console.log(`%c无输入`, error + contextMargin);
         show.forMoreEach((a, b) => {
             console.log(`%c${a} => `, font + contextColor + contextMargin, b)
         });
-        console.log(`%cend===============${start}===============end`, font + descColor);
+        // console.log(`%cend===============${start}===============end`, font + descColor);
+        console.log(`%c :end %cRunTime: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`, font + tagColor, font + descColor + tagMargin);
         console.log('\n')
     }
 }

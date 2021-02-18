@@ -56,6 +56,7 @@ abstract class DropBase extends SceneBase {
         if (!this.beforeTouchBeginHandle(this.Child.name)) return;
         // 获取当前扑克牌中的全部队列
         const selectQueue: string[] = SceneUtil.getSelectPokeQueue(this.Child);
+        console.log('selectQueue', selectQueue)
         // 记录当前拖拽的唯一值和扑克牌队列
         DropBaseUtil.recordDropPoke(this._GROUP_CODE, selectQueue);
         this.selectPokes = DropBaseUtil.getSelectedPokes();
@@ -80,19 +81,19 @@ abstract class DropBase extends SceneBase {
         if (!this.beforeTouchMoveHandle(this.Child.name)) return;
         // 开启移动锁定
         DropBaseUtil.clock();
+        console.log('this.selectPokes', this.selectPokes)
         this.selectPokes.forEach((poke/* , index */) => {
-            setTimeout(() => {
-                // 根据定位点，移动的x像素大小
-                const moveX: number = stageX - poke.XTouch;
-                // 根据定位点，移动的y像素大小
-                const moveY: number = stageY - poke.YTouch;
-                console.log('moveX', moveX, 'moveY', moveY)
-                poke.XTouch = stageX;
-                poke.YTouch = stageY;
-                // 移动当前画像
-                poke.x = poke.x + moveX;
-                poke.y = poke.y + moveY;
-            }/* , 50 * index */);
+            // setTimeout(() => {
+            // 根据定位点，移动的x像素大小
+            const moveX: number = stageX - poke.XTouch;
+            // 根据定位点，移动的y像素大小
+            const moveY: number = stageY - poke.YTouch;
+            poke.XTouch = stageX;
+            poke.YTouch = stageY;
+            // 移动当前画像
+            poke.x = poke.x + moveX;
+            poke.y = poke.y + moveY;
+            // }/* , 50 * index */);
         });
     }
 
@@ -103,7 +104,7 @@ abstract class DropBase extends SceneBase {
     protected abstract beforeTouchMoveHandle(name: string): boolean;
 
     private onTouchEnd() {
-        DropBaseUtil.onTouchEndHandle(/* this.beforeTouchEndHandle() */false);
+        DropBaseUtil.onTouchEndHandle(this.beforeTouchEndHandle());
     }
 
     /**
@@ -119,8 +120,7 @@ abstract class DropBase extends SceneBase {
     public dropMoveValid() {
         const touchSelected: TouchSelected = DropBaseUtil.getDropPoke();
         return this._GROUP_CODE == touchSelected.groupId
-        // TODO: 下方代码被屏蔽
-        // && this.Config.off.poke.name == touchSelected.componentName;
+            && touchSelected.componentName.deepContains(this.Config.off.poke.name);
     }
 
     /**

@@ -130,7 +130,6 @@ class Config implements ConfigInterface {
          */
         const that: this = this;
         function gameEndState() {
-            console.log('in  this.GAME_END_STATE_KEY', that.GAME_END_STATE_KEY)
             const state: string | boolean = egret.localStorage.getItem(this.GAME_END_STATE_KEY) || '0';
             return state === '1';
         }

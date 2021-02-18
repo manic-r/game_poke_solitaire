@@ -102,4 +102,12 @@ Array.prototype.isEquals = function <T>(array: T[]): boolean {
     if (this.length !== array.length) return false;
     return this.every((value: T) => array.deepContains(value));
 }
+// 自定义逻辑判断是否满足
+Array.prototype.filterOwner = function <T>(predicate: (value: T) => boolean): boolean {
+    const array: T[] = this.filter(predicate);
+    if (array.length === 0) {
+        return false;
+    }
+    return true;
+}
 //////////////////////////////////////////////////////////////////////////////////////////////

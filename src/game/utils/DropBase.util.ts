@@ -48,28 +48,38 @@ class DropBaseUtil {
      * 记录当前拖拽扑克牌
      */
     public static recordDropPoke(groupId: string, names: string[]) {
-        SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId, componentName: names };
+        // SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId, componentName: names };
+        LocationState.moveQueue = names;
+        LocationState.moveGroupId = groupId;
     }
 
     /**
      * 移除当前拖拽扑克牌
      */
     public static deleteDropPoke() {
-        SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId: null, componentName: [] };
+        // SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] = { groupId: null, componentName: [] };
+        LocationState.moveGroupId = null;
+        LocationState.moveQueue = [];
     }
 
     /**
      * 获取存储的扑克牌对象
      */
     public static getDropPokeName(): string[] {
-        return SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED].componentName || [];
+        // const config: TouchSelected = SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] || {};
+        // return config.componentName || [];
+        return LocationState.moveQueue;
     }
 
     /**
      * 获取存储的拖拽对象
      */
     public static getDropPoke(): TouchSelected {
-        return SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] || { groupId: null, componentName: [] };
+        // return SceneManagerUtil.Instance.rootLayer.stage[DropBase.TOUCH_SELECTED] || { groupId: null, componentName: [] };
+        return {
+            groupId: LocationState.moveGroupId,
+            componentName: LocationState.moveQueue
+        }
     }
 
     public static selectPokesHandle<T>(callbackfn: (param: T, index: number) => any) {
@@ -91,24 +101,34 @@ class DropBaseUtil {
         // 扑克牌队列中获取扑克牌对象
         const queue: string[] = SceneUtil.getSelectPokeQueue(selectNames[0]);
         // 判断两个对象是否相等， 不相等则撤回记录到原始位置
-        if (selectNames.isEquals(queue)) {
+        if (!selectNames.isEquals(queue)) {
             canMove = false;
         }
+        // 重置扑克牌位置
+        this.rollback(canMove);
+        if (canMove) {
+            PokeRuleUtil.Instance.handleMarge();
+        }
+        // 重置扑克牌记录
+        // this.deleteDropPoke();
+        // this.unClock();
+        LocationState.reset();
+    }
+
+    /**
+     * 重置扑克牌位置
+     * @param canMove 是否可重定位移动 {true: 是, false: 不可移动}
+     */
+    public static rollback(canMove: boolean) {
         // 获取所有拖拽的扑克
-        DropBaseUtil.selectPokesHandle<Poke>(poke => {
+        this.selectPokesHandle<Poke>(poke => {
             // 移除遮罩
-            DropBaseUtil.removeMask(poke, DropBase.MASK_OF_POKE);
+            this.removeMask(poke, DropBase.MASK_OF_POKE);
             if (!canMove) {
                 // 重置回到上一次的位置(重新计算，防止偏移)
                 DropBaseUtil.moveTween(poke, PokeRuleUtil.Instance.reckonPointByNameOrComponent(poke));
             }
         })
-        if (canMove) {
-            PokeRuleUtil.Instance.handleMarge();
-        }
-        // 重置扑克牌记录
-        DropBaseUtil.deleteDropPoke();
-        DropBaseUtil.unClock();
     }
 
     /**
@@ -121,8 +141,7 @@ class DropBaseUtil {
         // 记录碰撞点对应的扑克牌对象
         const hitPokes: Box[] = [];
         // 获取当前扑克牌以及下方列表中全部扑克牌名称
-        const point: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(poke.name);
-        const select: string[] = PokeRuleUtil.Instance.pokeQueue[point.col];
+        const select: string[] = SceneUtil.getSelectPokeQueue(poke.name);
         hitPoints.filter(hitPoint => !select.deepContains(hitPoint.component.name)).forEach(hitPoint => {
             const isHit: boolean = poke.hitTestPoint(hitPoint.topLeft.x, hitPoint.topLeft.y)
                 || poke.hitTestPoint(hitPoint.topRight.x, hitPoint.topRight.y)
@@ -140,7 +159,7 @@ class DropBaseUtil {
     public static getCollisionCheck(poke: Poke): Box {
         // 获取全部碰撞扑克牌
         const collision: Box[] = DropBaseUtil.getCollisionChecks(poke);
-        // TODO 是否需要做判断操作 还是只是获取第一个
+        // TODO: 是否需要做判断操作 还是只是获取第一个
         if (collision.length === 1) {
             return collision[0];
         }
@@ -164,14 +183,16 @@ class DropBaseUtil {
      * (true: 锁定, false: 非锁定)
      */
     public static clock() {
-        SceneManagerUtil.Instance.rootLayer.stage['clock'] = true;
+        // SceneManagerUtil.Instance.rootLayer.stage['clock'] = true;
+        LocationState.clock = true;
     }
 
     /**
      * 解锁拖拽
      */
     public static unClock() {
-        SceneManagerUtil.Instance.rootLayer.stage['clock'] = false;
+        // SceneManagerUtil.Instance.rootLayer.stage['clock'] = false;
+        LocationState.clock = false;
     }
 
     /**
@@ -179,6 +200,6 @@ class DropBaseUtil {
      * @returns true: 锁定, false: 非锁定
      */
     public static isClock(): boolean {
-        return SceneManagerUtil.Instance.rootLayer.stage['clock'];
+        return LocationState.clock;
     }
 }

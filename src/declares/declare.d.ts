@@ -7,6 +7,8 @@ interface Object {
     /**
      * 判断对象是否合法
      * value != null &7 value != undefined
+     * @returns true: 合法
+     * @returns false: 不合法
      */
     isLegal(value: any): boolean;
 }
@@ -79,4 +81,8 @@ interface Array<T> {
      * @returns true: 一致, false: 不一致
      */
     isEquals(array: T[]): boolean;
+    /**
+     * 自定义逻辑判断是否满足
+     */
+    filterOwner(predicate: (value: T) => boolean): boolean;
 }

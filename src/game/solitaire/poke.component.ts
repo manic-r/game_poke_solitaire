@@ -52,14 +52,16 @@ class Poke extends DropBase {
 
     protected beforeTouchBeginHandle(name: string): boolean {
         // TODO:
+        // ConsoleUtil.clips('beforeTouchBeginHandle', '!DropBaseUtil.isClock()', !DropBaseUtil.isClock())
+        return true;
         // if (DropBaseUtil.isClock()) return false;
-        ConsoleUtil.clips('开始点击的事件', 'DropBaseUtil.isClock()', DropBaseUtil.isClock());
-        return !DropBaseUtil.isClock()// && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
+        return !DropBaseUtil.isClock() /* && PokeRuleUtil.Instance.validSelectPokeCanDrop(name); */
     }
 
     protected beforeTouchMoveHandle(name: string): boolean {
-        ConsoleUtil.clips('beforeTouchMoveHandle', 'this.dropMoveValid()', this.dropMoveValid())
-        return this.dropMoveValid()/*  && PokeRuleUtil.Instance.validSelectPokeCanDrop(name) */;
+        // ConsoleUtil.clips('beforeTouchMoveHandle', 'this.dropMoveValid()', this.dropMoveValid())
+        return true;
+        return this.dropMoveValid() /* && PokeRuleUtil.Instance.validSelectPokeCanDrop(name); */
     }
 
     protected beforeTouchEndHandle(): boolean {
@@ -73,7 +75,7 @@ class Poke extends DropBase {
         }
         // 获取碰撞点
         const hitPokes: Box = DropBaseUtil.getCollisionCheck(this);
-        console.log('碰撞点！！！！！！！', hitPokes)
+        ConsoleUtil.clips('碰撞点', 'hitPokes', hitPokes)
         // 如果未碰撞或者碰撞逻辑不满足时（交叉减小）返回
         if (!hitPokes /* || !PokeRuleUtil.Instance.checkPokeSiteColor(this, hitPokes) */) {
             return false;
@@ -81,9 +83,9 @@ class Poke extends DropBase {
         // 扑克牌碰撞逻辑 =================================================
         // 历史列处理
         // 获取扑克牌坐标[拖拽之前]
-        const historyPokePoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(this.name);
+        const historyPokePoint: PokePoint = SceneUtil.getPokeImmediatelyPoint(this.name);
         // 历史操作列
-        const historyQueue: string[] = PokeRuleUtil.Instance.pokeQueue[historyPokePoint.col];
+        const historyQueue: string[] = PokeRuleUtil.Instance.getPokeQueueByIndex(historyPokePoint.col);
         // 移除原本数据，返回移除的集合
         const moveQueue: string[] = historyQueue.remove(historyPokePoint.row);
         /**
@@ -101,20 +103,20 @@ class Poke extends DropBase {
             const topBox: FixedBox = SceneUtil.getComponentByName(hitPokes.name);
             topBox.addBoxChild(this.name);
             // 计算位置
-            const { x, y }: Point = PokeRuleUtil.Instance.reckonPointByNameOrComponent(hitPokes);
+            const { x, y }: Point = PokeRuleUtil.Instance.reckonPointByNameOrComponent(this.name);
             // 移动扑克牌
             DropBaseUtil.moveTween(SceneUtil.getComponentByName(this.name), { x, y });
         } else {
             // 修改增加元素的数组信息
-            const orderPoint: PokePoint = PokeRuleUtil.Instance.getPokeImmediatelyPoint(hitPokes.name);
-            // 如果放置的是在fixed上，设置fixed属性
+            const orderPoint: PokePoint = SceneUtil.getPokeImmediatelyPoint(hitPokes.name);
+            // 如果放置的是在center_fixed上，设置fixed属性
             if (PokeRuleUtil.Instance.pokeQueue[orderPoint.col].length === 0) {
                 // 获取对应的fixed盒子信息
                 const name: string = PokeRuleUtil.Instance.CenterFixedBox.get(orderPoint.col);
                 SceneUtil.getComponentByName<FixedBox>(name).removeBoxChild();
             }
-            PokeRuleUtil.Instance.pokeQueue[orderPoint.col].push(...moveQueue);
-            // 移动扑克牌计算动画 =========
+            PokeRuleUtil.Instance.getPokeQueueByIndex(orderPoint.col).push(...moveQueue);
+            // 移动扑克牌计算动画
             moveQueue.forEach(pokeName => {
                 // 计算位置
                 const { x, y } = PokeRuleUtil.Instance.reckonPointByNameOrComponent(pokeName);
