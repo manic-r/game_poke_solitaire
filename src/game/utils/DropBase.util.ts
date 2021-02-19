@@ -113,7 +113,7 @@ class DropBaseUtil {
         // 移除扑克牌提示遮罩
         LocationState.tipQueue.forEach(name => {
             const poke: Poke = SceneUtil.getComponentByName(name);
-            DropBaseUtil.removeMask(poke, 'TIP_POKE');
+            if (poke) DropBaseUtil.removeMask(poke, 'TIP_POKE');
         })
         // 重置扑克牌记录
         LocationState.reset();
