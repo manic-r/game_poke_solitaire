@@ -21,7 +21,10 @@ class SceneUtil {
      * @param name 控件名称
      */
     public static removeComponentByName(name: string) {
-        SceneManagerUtil.Instance.rootLayer.removeChild(this.getComponentByName(name));
+        const poke: Poke = this.getComponentByName(name);
+        if (poke) {
+            SceneManagerUtil.Instance.rootLayer.removeChild(poke);
+        }
     }
 
     /**

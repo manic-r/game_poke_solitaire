@@ -42,7 +42,9 @@ class PokeRuleUtil {
     public handleMarge() {
         // 判断游戏是否结束，结束则跳转结束画面
         if (PokeRuleUtil.Instance.gameEnding()) {
-            alert('通关成功！')
+            setTimeout(() => {
+                alert('通关成功！')
+            }, 300)
             return;
         }
         SceneUtil.getComponentByNames<FixedBox>(this.GearsBox)
@@ -51,8 +53,11 @@ class PokeRuleUtil {
                 const next: string = component.next;
                 // 获取扑克牌列表和TopQueue内容列表
                 const queue: string[][] = [...this.pokeQueue];
-                queue.push(this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body).filter(name => name));
-                for (let pokeQueue of this.pokeQueue) {
+                this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body)
+                    .filter(name => name)
+                    .forEach(name => queue.push([name]))
+                console.log(queue)
+                for (let pokeQueue of queue) {
                     const lastPoke: string = pokeQueue.last();
                     if (lastPoke && (lastPoke === next
                         || lastPoke.endsWith(next))) {
