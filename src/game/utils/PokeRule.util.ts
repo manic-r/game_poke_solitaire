@@ -52,10 +52,7 @@ class PokeRuleUtil {
             .forEach(component => {
                 const next: string = component.next;
                 // 获取扑克牌列表和TopQueue内容列表
-                const queue: string[][] = [...this.pokeQueue];
-                this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body)
-                    .filter(name => name)
-                    .forEach(name => queue.push([name]))
+                const queue: string[][] = this.margeTopWidthPoke();
                 for (let pokeQueue of queue) {
                     const lastPoke: string = pokeQueue.last();
                     if (lastPoke && (lastPoke === next
@@ -75,6 +72,18 @@ class PokeRuleUtil {
                     }
                 }
             })
+    }
+
+    /**
+     * 合并top和poke队列
+     */
+    public margeTopWidthPoke(): string[][] {
+        // 获取扑克牌列表和TopQueue内容列表
+        const queue: string[][] = [...this.pokeQueue];
+        this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body)
+            .filter(name => name)
+            .forEach(name => queue.push([name]));
+        return queue;
     }
 
     /**
@@ -211,7 +220,7 @@ class PokeRuleUtil {
         // 花色规则：对应Map 【a: '♥（红桃）', b: '♠（黑桃）', c: '♦（方块）', d: '♣（梅花）'】
         // a -> b | d; b -> a | c; c -> b | d; d -> a | c;
         // 处理花色
-        const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
+        const roleMap: { [num: string]: POKE_COLOR } = SceneManagerUtil.Instance.config.roleMap;
         const localColor: POKE_COLOR = roleMap[localPoke.config.off.poke.type];
         const hitColor: POKE_COLOR = roleMap[hitPoke.config.off.poke.type];
         if (localColor === hitColor) return false;
@@ -228,7 +237,7 @@ class PokeRuleUtil {
      * @return true:可拖拽, false: 不可拖拽
      */
     public validSelectPokeCanDrop(name: string): boolean {
-        const roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
+        const roleMap: { [num: string]: POKE_COLOR } = SceneManagerUtil.Instance.config.roleMap;
         // 获取扑克牌队列
         const index: number[] = this.pokeQueue.location(name);
         // 判断对象是否是在pokeQueue队列中

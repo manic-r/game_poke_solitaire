@@ -1,11 +1,17 @@
 class PokeInitUtil {
 
     private static instance: PokeInitUtil;
+    // A类型扑克牌名称
+    private static POKE_A_ARRAY: string[] = [];
     private config: Config = SceneManagerUtil.Instance.config;
     constructor() {
         if (PokeInitUtil.instance == null) {
             // 声明扑克牌生成池对象
             PokeInitUtil.instance = this;
+            // 创建A类扑克牌名称
+            this.config.POKE_TYPE.forEach(type =>
+                PokeInitUtil.POKE_A_ARRAY.push(PokeRandomCreator.getPokeName({ type, figure: 1 }))
+            )
         }
     }
 
@@ -27,7 +33,12 @@ class PokeInitUtil {
                         fixed: { is: false, type: null, storey: 'pokeQueue', name: null }
                     }
                 };
-                DropBaseUtil.moveTween(new Poke(config), { x, y }, () => { });
+                const poke: Poke = new Poke(config);
+                // 判断如果是A, 高亮标识
+                if (this.POKE_A_ARRAY.deepContains(name)) {
+                    DropBaseUtil.createMask(poke, { color: this.instance.config.defaultAColor, alpha: 0.3 })
+                }
+                DropBaseUtil.moveTween(poke, { x, y }, () => { });
             }))
         return pokeQueue;
     }
