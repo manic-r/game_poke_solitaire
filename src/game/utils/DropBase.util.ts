@@ -10,7 +10,7 @@ class DropBaseUtil {
         const maskNum: number = input.$children.filter(component => component instanceof egret.Shape && component.name == name).length;
         if (maskNum > 0) return;
         const square: egret.Shape = new egret.Shape();
-        square.graphics.beginFill(0xF5F5DC, 0.8);
+        square.graphics.beginFill(color, alpha);
         square.graphics.drawRect(0, 0, input.width, input.height);
         square.graphics.endFill();
         square.name = name;
