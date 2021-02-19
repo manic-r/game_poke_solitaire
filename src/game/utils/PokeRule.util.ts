@@ -44,7 +44,7 @@ class PokeRuleUtil {
         if (PokeRuleUtil.Instance.gameEnding()) {
             setTimeout(() => {
                 alert('通关成功！')
-            }, 300)
+            }, SceneManagerUtil.Instance.config.moveTime)
             return;
         }
         SceneUtil.getComponentByNames<FixedBox>(this.GearsBox)
@@ -56,7 +56,6 @@ class PokeRuleUtil {
                 this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body)
                     .filter(name => name)
                     .forEach(name => queue.push([name]))
-                console.log(queue)
                 for (let pokeQueue of queue) {
                     const lastPoke: string = pokeQueue.last();
                     if (lastPoke && (lastPoke === next
@@ -65,7 +64,7 @@ class PokeRuleUtil {
                         pokeQueue.pop();
                         // 将当前扑克牌移动至对应位置
                         egret.Tween.get(SceneUtil.getComponentByName<Poke>(lastPoke))
-                            .to({ x: component.x, y: component.y }, 300, egret.Ease.sineIn)
+                            .to({ x: component.x, y: component.y }, SceneManagerUtil.Instance.config.moveTime, egret.Ease.sineIn)
                             .call(() => {
                                 SceneUtil.removeComponentByName(lastPoke);
                                 // 记录当前队列扑克

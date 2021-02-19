@@ -18,6 +18,8 @@ class Config implements ConfigInterface {
     layout: Layout;
     // 游戏数据
     gameData: StoreSave;
+    // 组件移动时间(ms)
+    moveTime: number = 300;
 
     // 状态标识key
     GAME_END_STATE_KEY: string = 'start';
@@ -113,8 +115,6 @@ class Config implements ConfigInterface {
 
         return {
             pokeQueue: creator(this),
-            // TODO:
-            // pokeQueue: [['pk_d_1'], ['pk_a_1'], ['pk_c_1'], ['pk_b_1']],
             gearsQueue: [],
             topBoxQueue: []
         };

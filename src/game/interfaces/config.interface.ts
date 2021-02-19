@@ -18,6 +18,8 @@ interface ConfigInterface {
     layout: Layout;
     // 游戏数据
     gameData: StoreSave;
+    // 组件移动时间(ms)
+    moveTime: number;
 }
 
 interface Layout {
