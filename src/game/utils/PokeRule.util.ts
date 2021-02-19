@@ -52,13 +52,29 @@ class PokeRuleUtil {
             .forEach(component => {
                 const next: string = component.next;
                 // 获取扑克牌列表和TopQueue内容列表
-                const queue: string[][] = this.margeTopWidthPoke();
+                const queue: string[][] = [...this.pokeQueue];
+                // 存储top中的扑克牌对应fixed关系
+                const mapping: { [name: string]: string } = {};
+                this.TopFixedBox.map(name => { return { fixed: name, poke: SceneUtil.getComponentByName<FixedBox>(name).body } })
+                    .filter(({ poke }) => poke)
+                    .forEach(({ fixed, poke }) => {
+                        queue.push([poke]);
+                        mapping[poke] = fixed;
+                    });
                 for (let pokeQueue of queue) {
                     const lastPoke: string = pokeQueue.last();
                     if (lastPoke && (lastPoke === next
                         || lastPoke.endsWith(next))) {
                         // 移除扑克队列对象
                         pokeQueue.pop();
+                        // 如果`mapping`中存在控件名称,则进行处理
+                        const fixedName: string = mapping[lastPoke];
+                        if (fixedName) {
+                            const fixedComponent: FixedBox = SceneUtil.getComponentByName(fixedName);
+                            if (fixedComponent) {
+                                fixedComponent.removeBoxChild();
+                            }
+                        }
                         // 将当前扑克牌移动至对应位置
                         egret.Tween.get(SceneUtil.getComponentByName<Poke>(lastPoke))
                             .to({ x: component.x, y: component.y }, SceneManagerUtil.Instance.config.moveTime, egret.Ease.sineIn)

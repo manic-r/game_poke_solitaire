@@ -65,9 +65,11 @@ class Poke extends DropBase {
                 }
                 map[SceneManagerUtil.Instance.config.colorReverse[roleMap[type]]].forEach(t => {
                     const nextName: string = `${start}_${t}_${Number(num) + 1}`;
-                    LocationState.tipQueue.push(nextName);
                     const poke: Poke = SceneUtil.getComponentByName(nextName);
-                    DropBaseUtil.createMask(poke, { name: 'TIP_POKE', color: SceneManagerUtil.Instance.config.defaultTipColor, alpha: 0.3 });
+                    if (poke) {
+                        LocationState.tipQueue.push(nextName);
+                        DropBaseUtil.createMask(poke, { name: 'TIP_POKE', color: SceneManagerUtil.Instance.config.defaultTipColor, alpha: 0.3 });
+                    }
                 })
             }
         }
