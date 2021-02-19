@@ -20,6 +20,14 @@ class Config implements ConfigInterface {
     gameData: StoreSave;
     // 组件移动时间(ms)
     moveTime: number = 300;
+    // 花色映射关系
+    roleMap: { [num: string]: POKE_COLOR } = { a: 'RED', b: 'BLACK', c: 'RED', d: 'BLACK' };
+    // 反向对应关系
+    colorReverse: { [color: string]: POKE_COLOR } = { 'RED': 'BLACK', 'BLACK': 'RED' };
+    // 默认A的颜色
+    defaultAColor: number = 0xCCFF80;
+    // 默认提示的颜色
+    defaultTipColor: number = 0xD2A2CC;
 
     // 状态标识key
     GAME_END_STATE_KEY: string = 'start';

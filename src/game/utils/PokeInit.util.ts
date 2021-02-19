@@ -36,7 +36,7 @@ class PokeInitUtil {
                 const poke: Poke = new Poke(config);
                 // 判断如果是A, 高亮标识
                 if (this.POKE_A_ARRAY.deepContains(name)) {
-                    DropBaseUtil.createMask(poke, { color: 0xFFDC35, alpha: 0.4 })
+                    DropBaseUtil.createMask(poke, { color: this.instance.config.defaultAColor, alpha: 0.3 })
                 }
                 DropBaseUtil.moveTween(poke, { x, y }, () => { });
             }))

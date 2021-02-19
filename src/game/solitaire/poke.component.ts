@@ -51,7 +51,27 @@ class Poke extends DropBase {
     }
 
     protected beforeTouchBeginHandle(name: string): boolean {
-        return !DropBaseUtil.isClock() && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
+        const bool: boolean = !DropBaseUtil.isClock() && PokeRuleUtil.Instance.validSelectPokeCanDrop(name);
+        // 设置提示
+        if (bool) {
+            const [start, type, num] = name.split('_');
+            if (Number(num) < 13) {
+                const roleMap: { [num: string]: POKE_COLOR } = SceneManagerUtil.Instance.config.roleMap;
+                // 转换为 'POKE_COLOR' -> [type]类型
+                const map: { [index: string]: string[] } = {};
+                for (let key in roleMap) {
+                    map[roleMap[key]] = map[roleMap[key]] || [];
+                    map[roleMap[key]].push(key)
+                }
+                map[SceneManagerUtil.Instance.config.colorReverse[roleMap[type]]].forEach(t => {
+                    const nextName: string = `${start}_${t}_${Number(num) + 1}`;
+                    LocationState.tipQueue.push(nextName);
+                    const poke: Poke = SceneUtil.getComponentByName(nextName);
+                    DropBaseUtil.createMask(poke, { name: 'TIP_POKE', color: SceneManagerUtil.Instance.config.defaultTipColor, alpha: 0.3 });
+                })
+            }
+        }
+        return bool;
     }
 
     protected beforeTouchMoveHandle(name: string): boolean {

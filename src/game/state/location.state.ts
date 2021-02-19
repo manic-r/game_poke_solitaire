@@ -6,7 +6,8 @@ class LocationState {
     public static moveQueue: string[] = [];
     // 拖拽锁定状态
     public static clock: boolean = false;
-    /*****************控制原始位置******************/
+    /*****************存储提示的扑克牌信息******************/
+    public static tipQueue: string[] = [];
 
     /**
      * 重置状态
@@ -15,14 +16,7 @@ class LocationState {
         this.moveGroupId = null;
         this.moveQueue = [];
         this.clock = false;
+        this.tipQueue = [];
         return this;
-    }
-
-    public static log() {
-        return {
-            moveGroupId: this.moveGroupId,
-            moveQueue: this.moveQueue,
-            clock: this.clock
-        }
     }
 }

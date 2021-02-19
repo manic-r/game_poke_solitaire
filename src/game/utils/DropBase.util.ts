@@ -96,22 +96,25 @@ class DropBaseUtil {
         // ================================================
         // 为了避免抬起时是在扑克牌上，此处直接获取选中扑克牌信息
         const selectNames: string[] = DropBaseUtil.getDropPokeName();
-        if (selectNames.length === 0) {
-            LocationState.reset();
-            return;
+        if (selectNames.length > 0) {
+            // ================================================
+            // 扑克牌队列中获取扑克牌对象
+            const queue: string[] = SceneUtil.getSelectPokeQueue(selectNames[0]);
+            // 判断两个对象是否相等， 不相等则撤回记录到原始位置
+            if (!selectNames.isEquals(queue)) {
+                canMove = false;
+            }
+            // 重置扑克牌位置
+            this.rollback(canMove);
+            if (canMove) {
+                PokeRuleUtil.Instance.handleMarge();
+            }
         }
-        // ================================================
-        // 扑克牌队列中获取扑克牌对象
-        const queue: string[] = SceneUtil.getSelectPokeQueue(selectNames[0]);
-        // 判断两个对象是否相等， 不相等则撤回记录到原始位置
-        if (!selectNames.isEquals(queue)) {
-            canMove = false;
-        }
-        // 重置扑克牌位置
-        this.rollback(canMove);
-        if (canMove) {
-            PokeRuleUtil.Instance.handleMarge();
-        }
+        // 移除扑克牌提示遮罩
+        LocationState.tipQueue.forEach(name => {
+            const poke: Poke = SceneUtil.getComponentByName(name);
+            DropBaseUtil.removeMask(poke, 'TIP_POKE');
+        })
         // 重置扑克牌记录
         LocationState.reset();
     }
