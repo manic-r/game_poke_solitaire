@@ -5,7 +5,8 @@ class StartScene extends SceneBase {
 
     constructor() {
         super();
-        this.gameIsStart = LocalStorageUtil.gameEndState();
+        console.log('SceneManagerUtil.Instance.config', SceneManagerUtil.Instance.config)
+        this.gameIsStart = SceneManagerUtil.Instance.config.gameState;
         this.skinName = 'resource/eui_skins/games/solitaire/StartScene.exml';
     }
 
@@ -35,14 +36,15 @@ class StartScene extends SceneBase {
         startBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.startButtonClick, this);
 
         // 继续游戏
-        const endBtn = new eui.Button();
-        endBtn.width = buttonWidth;
-        endBtn.height = buttonHeight;
-        endBtn.label = '继续游戏';
-        if (!this.gameIsStart) endBtn.currentState = 'disabled';
-        endBtn.x = buttonX;
-        endBtn.y = buttonY + buttonPadding + buttonHeight;
-        this.addChild(endBtn);
+        const continueBtn = new eui.Button();
+        continueBtn.width = buttonWidth;
+        continueBtn.height = buttonHeight;
+        continueBtn.label = '继续游戏';
+        if (!this.gameIsStart) continueBtn.currentState = 'disabled';
+        continueBtn.x = buttonX;
+        continueBtn.y = buttonY + buttonPadding + buttonHeight;
+        this.addChild(continueBtn);
+        continueBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.continueButtonClick, this);
 
         // 退出
         const exitBtn = new eui.Button();
@@ -64,10 +66,20 @@ class StartScene extends SceneBase {
             SceneManagerUtil.Instance.gameLayer = gameScene;
             SceneManagerUtil.Instance.changeScene(gameScene);
         }
+        // 如果是重新开始，则重置记录
         if (this.gameIsStart) {
-
+            LocalStorageUtil.setGameState.restart();
         }
         startGame();
+    }
+
+    /**
+     * 继续游戏按钮
+     */
+    private continueButtonClick() {
+        const gameScene: GameMainScene = new GameMainScene();
+        SceneManagerUtil.Instance.gameLayer = gameScene;
+        SceneManagerUtil.Instance.changeScene(gameScene);
     }
 
     /**

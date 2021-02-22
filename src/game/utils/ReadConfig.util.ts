@@ -29,8 +29,8 @@ class Config implements ConfigInterface {
     // 默认提示的颜色
     defaultTipColor: number = 0xD2A2CC;
 
-    // 状态标识key
-    GAME_END_STATE_KEY: string = 'start';
+    // 游戏状态标识key
+    private GAME_END_STATE_KEY: boolean;
 
     constructor() {
         // 计算空隙大小（必要）
@@ -43,8 +43,15 @@ class Config implements ConfigInterface {
             CenterFixedBox: this.createInTemporaryPoint()
         }
         // 初始化布局对象 ===
+        // 初始化获取游戏状态
+        this.GAME_END_STATE_KEY = LocalStorageUtil.gameState;
+        return this;
+    }
+
+    public init(): this {
         // 获取扑克牌对象
         this.initGameData();
+        return this;
     }
 
     private createGearsPoint(): Point[] {
@@ -132,15 +139,18 @@ class Config implements ConfigInterface {
      * 创建游戏数据
      */
     private initGameData() {
-        /**
-         * 获取游戏状态
-         * @returns 已结束返回: false, 未结束返回: true
-         */
-        const that: this = this;
-        function gameEndState() {
-            const state: string | boolean = egret.localStorage.getItem(this.GAME_END_STATE_KEY) || '0';
-            return state === '1';
+        this.gameData = this.GAME_END_STATE_KEY ? this.getGameInfoByLocalStorage() : this.getGameInfoByCreator();
+    }
+
+    public get gameState(): boolean {
+        return this.GAME_END_STATE_KEY;
+    }
+
+    public updateGameState(state?: GameState) {
+        if (Object.isLegal(state)) {
+            this.GAME_END_STATE_KEY = state === '1';
+        } else {
+            this.GAME_END_STATE_KEY = !this.GAME_END_STATE_KEY;
         }
-        this.gameData = gameEndState() ? this.getGameInfoByLocalStorage() : this.getGameInfoByCreator();
     }
 }

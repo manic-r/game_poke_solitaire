@@ -7,8 +7,27 @@ class LocalStorageUtil {
      * 获取游戏状态
      * @returns 已结束返回: false, 未结束返回: true
      */
-    public static gameEndState() {
-        const state: string | boolean = localStorage.getItem(this.GAME_END_STATE_KEY) || '0';
+    public static get gameState(): boolean {
+        const state: string | boolean = egret.localStorage.getItem(this.GAME_END_STATE_KEY) || '0';
         return state === '1';
+    }
+
+    /**
+     * 设置游戏状态
+     * @returns 已结束返回: false, 未结束返回: true
+     */
+    public static get setGameState(): {
+        isStart: () => Config,
+        restart: () => Config
+    } {
+        function set(state: GameState) {
+            egret.localStorage.setItem(LocalStorageUtil.GAME_END_STATE_KEY, state);
+            SceneManagerUtil.Instance.config.updateGameState();
+            return SceneManagerUtil.Instance.config;
+        }
+        return {
+            isStart: () => set('1'),
+            restart: () => set('0')
+        }
     }
 }
