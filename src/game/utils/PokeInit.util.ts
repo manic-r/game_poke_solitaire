@@ -118,32 +118,3 @@ class PokeInitUtil {
         )
     }
 }
-
-// 随机数： https://blog.csdn.net/xutongbao/article/details/89098939
-const getRandomIntInclusive = (min: number, max: number, ignore: number[] = []): number => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    // 含最大值，含最小值
-    let resultNum: number = Math.floor(Math.random() * (max - min + 1)) + min;
-    if (ignore && ignore.length > 0 && ignore.indexOf(resultNum) > -1) {
-        return getRandomIntInclusive(min, max, ignore);
-    }
-    return resultNum;
-}
-
-/**
- * 随机数： https://blog.csdn.net/xutongbao/article/details/89098939
- * @param min 最小值范围
- * @param max 最大值范围
- * @param handle 处理函数（返回true视为通过，不进行retry）
- */
-const getRandomIntInclusiveWithFun = (min: number, max: number, handle: Function): number => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    // 含最大值，含最小值
-    let resultNum: number = Math.floor(Math.random() * (max - min + 1)) + min;
-    if (handle && !handle(resultNum)) {
-        return getRandomIntInclusiveWithFun(min, max, handle);
-    }
-    return resultNum;
-}

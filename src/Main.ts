@@ -103,12 +103,8 @@ class Main extends eui.UILayer {
      */
     protected createGameScene(): void {
         SceneManagerUtil.Instance.rootLayer = this;
-        // TODO Config类需要换确切位置初始化
         SceneManagerUtil.Instance.config = new Config();
         const startScene: StartScene = new StartScene();
         SceneManagerUtil.Instance.changeScene(startScene);
-        // const gameScene: GameMainScene = new GameMainScene();
-        // SceneManagerUtil.Instance.gameLayer = gameScene;
-        // SceneManagerUtil.Instance.changeScene(gameScene);
     }
 }

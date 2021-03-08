@@ -1,7 +1,7 @@
 class LocalStorageUtil {
 
     // 游戏结束状态，0：结束；1：未结束；null: 结束；
-    public static GAME_END_STATE_KEY: string = 'GAME_END_STATE';
+    public static GAME_END_STATE_KEY: string = '_GAME_END_STATE';
 
     /**
      * 获取游戏状态

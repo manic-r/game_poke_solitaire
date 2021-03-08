@@ -120,13 +120,6 @@ abstract class DropBase extends SceneBase {
     }
 
     /**
-     * 获取子组件的配置文件
-     */
-    private get Config(): WidgetConfig {
-        return this.Child['config'] as WidgetConfig || {};
-    }
-
-    /**
      * 画面加载完毕函数（可理解为初始化函数）
      */
     protected abstract onInit(parent: DropBase);

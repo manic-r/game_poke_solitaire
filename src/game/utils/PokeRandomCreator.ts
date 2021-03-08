@@ -38,7 +38,7 @@ class PokeRandomCreator {
         if (this.poolArray.length === 0) {
             return;
         }
-        const index: number = getRandomIntInclusive(0, this.poolArray.length - 1);
+        const index: number = Object.random1(0, this.poolArray.length - 1);
         const pokeName: string = this.poolArray[index];
         this.poolArray.splice(index, 1);
         const { type, figure } = PokeRandomCreator.analysisPokeName(pokeName);

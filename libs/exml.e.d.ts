@@ -14,6 +14,10 @@ declare class PokeComponentSkin extends eui.Skin{
 }
 declare class BackGroundexml extends eui.Skin{
 }
+declare class ConfigSceneexml extends eui.Skin{
+}
+declare class Logoexml extends eui.Skin{
+}
 declare class StartSceneexml extends eui.Skin{
 }
 declare module skins{

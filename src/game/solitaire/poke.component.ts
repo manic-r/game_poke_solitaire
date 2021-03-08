@@ -151,6 +151,8 @@ class Poke extends DropBase {
                 DropBaseUtil.moveTween(SceneUtil.getComponentByName(pokeName), { x, y });
             })
         }
+        // 存储游戏数据
+        PokeRuleUtil.Instance.saveToLocal();
         return true;
     }
 }

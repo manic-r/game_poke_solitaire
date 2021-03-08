@@ -5,14 +5,36 @@ interface Object {
      */
     isArray(value: any): boolean;
     /**
+     * 判断对象是否是数组
+     * @param value 判断对象值
+     */
+    isString(value: any): boolean;
+    /**
      * 判断对象是否合法
      * value != null &7 value != undefined
      * @returns true: 合法
      * @returns false: 不合法
      */
     isLegal(value: any): boolean;
-}
 
+    /**
+     * 获取随机数
+     * @param min 最小值范围
+     * @param max 最大值范围
+     * @param ignore 排除的数字集合
+     * 
+     * @url https://blog.csdn.net/xutongbao/article/details/89098939
+     */
+    random1<T extends string | number>(min: number, max: number, ignore?: number[]): T;
+
+    /**
+     * 随机数： https://blog.csdn.net/xutongbao/article/details/89098939
+     * @param min 最小值范围
+     * @param max 最大值范围
+     * @param handle 处理函数（返回true视为通过，不进行retry）
+     */
+    random2<T extends string | number>(min: number, max: number, handle?: Function): T;
+}
 interface String {
     /**
      * 判断字符串是否按照目标字符串开头
@@ -26,7 +48,6 @@ interface String {
      */
     endsWith(target: string): boolean;
 }
-
 
 interface Array<T> {
     /**

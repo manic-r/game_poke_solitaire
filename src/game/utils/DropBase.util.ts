@@ -4,7 +4,7 @@ class DropBaseUtil {
      * 创建拖拽遮罩
      */
     public static createMask(input: eui.Component, { name, color, alpha }: CreateMaskType = {}) {
-        name = name || `${Date.now()}_${getRandomIntInclusive(1000, 9999)}`;
+        name = name || `${Date.now()}_${Object.random1(1000, 9999)}`;
         color = color || 0xF5F5DC;
         alpha = alpha || 0.8;
         const maskNum: number = input.$children.filter(component => component instanceof egret.Shape && component.name == name).length;

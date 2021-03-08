@@ -18,5 +18,7 @@ class GameMainScene extends SceneBase {
         PokeRuleUtil.Instance.CenterFixedBox = PokeInitUtil.createCenterFixedBox();
         PokeRuleUtil.Instance.pokeQueue = PokeInitUtil.pokeQueueCreator();
         PokeRuleUtil.Instance.handleMarge();
+        // 存储游戏数据
+        PokeRuleUtil.Instance.saveToLocal();
     }
 }

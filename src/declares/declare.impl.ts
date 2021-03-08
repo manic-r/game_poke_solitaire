@@ -3,8 +3,31 @@
 Object.isArray = (value: any): boolean => {
     return Object.prototype.toString.call(value) === '[object Array]';
 }
+Object.isString = (value: any): boolean => {
+    return Object.prototype.toString.call(value) === '[object String]';
+}
 Object.isLegal = (value: any): boolean => {
     return value != null && value != undefined;
+}
+Object.random1 = <T extends string | number>(min: number, max: number, ignore: number[] = []): T => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    // 含最大值，含最小值
+    let resultNum: number = Math.floor(Math.random() * (max - min + 1)) + min;
+    if (ignore && ignore.length > 0 && ignore.indexOf(resultNum) > -1) {
+        return (Object.random1(min, max, ignore) as (string | number)) as T;
+    }
+    return (resultNum as (string | number)) as T;
+}
+Object.random2 = <T extends string | number>(min: number, max: number, handle: Function): T => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    // 含最大值，含最小值
+    let resultNum: number = Math.floor(Math.random() * (max - min + 1)) + min;
+    if (handle && !handle(resultNum)) {
+        return Object.random2(min, max, handle) as (string | number) as T;
+    }
+    return resultNum as (string | number) as T;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 String.prototype.startsWith = function (target: string): boolean {

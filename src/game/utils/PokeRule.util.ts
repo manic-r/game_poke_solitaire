@@ -43,7 +43,7 @@ class PokeRuleUtil {
         // 判断游戏是否结束，结束则跳转结束画面
         if (PokeRuleUtil.Instance.gameEnding()) {
             setTimeout(() => {
-                alert('通关成功！')
+                LocalStorageUtil.setGameState.restart();
             }, SceneManagerUtil.Instance.config.moveTime)
             return;
         }
@@ -84,6 +84,8 @@ class PokeRuleUtil {
                                 component.addBoxChild(lastPoke);
                                 this.handleMarge();
                             })
+                        // 存储游戏数据
+                        PokeRuleUtil.Instance.saveToLocal();
                         break;
                     }
                 }
@@ -293,5 +295,17 @@ class PokeRuleUtil {
     public dropMoveValid(name: string) {
         const touchSelected: TouchSelected = DropBaseUtil.getDropPoke();
         return touchSelected.componentName.deepContains(name);/* this._GROUP_CODE == touchSelected.groupId && */
+    }
+
+    /**
+     * 保存到LocalStorage
+     */
+    public saveToLocal() {
+        if (!SceneManagerUtil.Instance.config.__GAME_SAVING) return;
+        egret.localStorage.setItem('pokeQueue', JSON.stringify(this.pokeQueue));
+        const gearQueue: string[] = this.GearsBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body);
+        egret.localStorage.setItem('gearsQueue', JSON.stringify(gearQueue));
+        const topQueue: string[] = this.TopFixedBox.map(name => SceneUtil.getComponentByName<FixedBox>(name).body);
+        egret.localStorage.setItem('topBoxQueue', JSON.stringify(topQueue));
     }
 }

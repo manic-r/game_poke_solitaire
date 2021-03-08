@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="Logoexml" width="512" height="393" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image source="logo_png" x="0" y="0" width="100%" height="70%" />
+</e:Skin>

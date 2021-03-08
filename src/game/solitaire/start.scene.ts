@@ -5,7 +5,6 @@ class StartScene extends SceneBase {
 
     constructor() {
         super();
-        console.log('SceneManagerUtil.Instance.config', SceneManagerUtil.Instance.config)
         this.gameIsStart = SceneManagerUtil.Instance.config.gameState;
         this.skinName = 'resource/eui_skins/games/solitaire/StartScene.exml';
     }
@@ -15,18 +14,9 @@ class StartScene extends SceneBase {
     }
 
     private initScene() {
-        // const stageW = this.stage.stageWidth;
-        // const stageH = this.stage.stageHeight;
         const buttonX = 530, buttonY = 440, buttonHeight = 60, buttonWidth = 300, buttonPadding = 40;
-
-        // // 背景
-        // const sky = this.createBitmapByName('index_bg_png');
-        // this.addChild(sky);
-        // sky.width = stageW;
-        // sky.height = stageH;
-
         // 开始按钮
-        const startBtn = new eui.Button();
+        const startBtn: eui.Button = new eui.Button();
         startBtn.width = buttonWidth;
         startBtn.height = buttonHeight;
         startBtn.label = this.gameIsStart ? '重新开始' : '开始游戏';
@@ -35,12 +25,12 @@ class StartScene extends SceneBase {
         this.addChild(startBtn);
         startBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.startButtonClick, this);
 
-        // 继续游戏
-        const continueBtn = new eui.Button();
+        // 继续游戏|配置按钮
+        const continueBtn: eui.Button = new eui.Button();
         continueBtn.width = buttonWidth;
         continueBtn.height = buttonHeight;
-        continueBtn.label = '继续游戏';
-        if (!this.gameIsStart) continueBtn.currentState = 'disabled';
+        continueBtn.label = this.gameIsStart ? '继续游戏' : '配置';
+        // if (!this.gameIsStart) continueBtn.currentState = 'disabled';
         continueBtn.x = buttonX;
         continueBtn.y = buttonY + buttonPadding + buttonHeight;
         this.addChild(continueBtn);
@@ -77,9 +67,17 @@ class StartScene extends SceneBase {
      * 继续游戏按钮
      */
     private continueButtonClick() {
-        const gameScene: GameMainScene = new GameMainScene();
-        SceneManagerUtil.Instance.gameLayer = gameScene;
-        SceneManagerUtil.Instance.changeScene(gameScene);
+        // 判断是否是`配置`按钮，如果是配置按钮，则跳转配置场景
+        let scene: GameMainScene | ConfigScene = null;
+        if (this.gameIsStart) {
+            // 跳转游戏场地
+            scene = new GameMainScene();
+            SceneManagerUtil.Instance.gameLayer = scene;
+        } else {
+            // 跳转配置场景
+            scene = new ConfigScene();
+        }
+        SceneManagerUtil.Instance.changeScene(scene);
     }
 
     /**

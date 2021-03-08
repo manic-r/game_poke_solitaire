@@ -1,6 +1,6 @@
 abstract class SceneBase extends eui.Component {
 
-    public readonly stage: egret.Stage
+    public readonly stage: egret.Stage;
     public readonly root: eui.UILayer;
     public readonly gameScene: GameMainScene;
 

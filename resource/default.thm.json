@@ -22,6 +22,8 @@
 		"resource/eui_skins/games/PokeBorderSkin.exml",
 		"resource/eui_skins/games/PokeComponentSkin.exml",
 		"resource/eui_skins/games/solitaire/BackGround.exml",
+		"resource/eui_skins/games/solitaire/ConfigScene.exml",
+		"resource/eui_skins/games/solitaire/Logo.exml",
 		"resource/eui_skins/games/solitaire/StartScene.exml",
 		"resource/eui_skins/HScrollBarSkin.exml",
 		"resource/eui_skins/HSliderSkin.exml",
